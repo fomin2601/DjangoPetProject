@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        body {
+            background-color: #ffc;
+            margin: 20px auto;
+            color: #410c65;
+        }
+        .header {
+            position: fixed;
+            top: 0;
+            height: 50px;
+            background-color: #ffc;
+            width: 100%;
+            height: 50px;
+        }
+        .box-header {
+            max-width: 700px;
+            width: 70%;
+            margin: auto;
+            min-width: 300px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .exit{
+            text-decoration: none;
+            color: #410c65;
+            padding: 7px;
+            transition: all 0.3ms;
+
+        }
+        .exit:hover {
+            background-color: #ae8acb;
+            border-radius: 5px;
+        }
+        h1 {
+            margin: 3px 0;
+        }
+
+        .main{
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+        }
+        .room-flex-section {
+
+
+        }
+        .room-section {
+            /*background: linear-gradient(to bottom left, #61bec7 5%, #236659);
+            */
+            position: fixed;
+            width: 30%;
+            background: linear-gradient(to bottom left, #61bec7 5%, #236659);
+            height: 100vh;
+            overflow-y: scroll;
+        }
+        .room-box {
+            /*position: fixed;*/
+            margin: 50px 10px 0 10px;
+            width: 90%;
+            /*top: 55px;
+            left: 10px;*/
+        }
+        .room {
+            background-color: beige;
+            height: 50px;
+            width: 98%;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            box-shadow: 0 0.5em 1em -0.065em rgb(5 5 5 / 10%), 0 0 0 1px rgb(5 5 5 / 2%);
+            color: #4a4a4a;
+            display: block;
+            padding: 7px;
+            font-size: 16px;
+        }
+        .chat-box {
+            margin-top: 45px;
+            margin-bottom: 83px;
+            width: 70%;
+        }
+        .chat {
+            min-height: 490px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #fff;
+            border-radius: 6px;
+            box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 2%);
+            color: #4a4a4a;
+            display: block;
+            padding: 1.25rem;
+        }
+        footer {
+            background-color: #f8fdc9;
+            position: fixed;
+            bottom: 0;
+            width: 70%;
+        }
+        .box-footer {
+            padding-bottom: 10px;
+            padding-top: 2px;
+            margin-left: 7px;
+
+        }
+        .box-sending {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        p {
+            margin: 0 0 7px;
+            font-size: 16px;
+        }
+        textarea {
+            display: block;
+            flex-grow: 20;
+            font-family: "Roboto", sans-serif;
+            background: #f2f2f2;
+            outline: 0;
+            border-color: #dbdbdb;
+            padding: 15px;
+            box-sizing: border-box;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: all 0.3ms;
+            box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+        }
+        textarea:hover, textarea:active {
+            border-color: #919191;
+        }
+        textarea:focus {
+            border-color: #7e2caa;
+        }
+        .button {
+            margin-left: 10px;
+            font-family: "Roboto", sans-serif;
+            text-transform: uppercase;
+            flex-grow: 1;
+            background: #5f0c9d;
+            border: 0;
+            padding: 15px 30px;
+            color: #FFFFFF;
+            font-size: 14px;
+            transition: all 0.3ms;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover, .button:active, .button:focus {
+            background: #5735be;
+        }
+
+
+
+        .message-block {
+            display: flex;
+            justify-content: flex-start;
+            margin: 20px 28px 20px 10px;
+        }
+        .message {
+            background: linear-gradient(to bottom right, #5f0c9d, #5544de);
+            border-radius: 0 15px 15px 15px;
+            width: 400px;
+            padding: 20px;
+        }
+        .triangle {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 0 solid transparent;
+            border-bottom: 20px solid transparent;
+            border-right: 18px solid #5b0b98;
+        }
+        .remessage-block {
+            display: flex;
+            justify-content: flex-end;
+            margin: 20px 10px 20px 28px;
+
+        }
+        .remessage {
+            width: 400px;
+            background: linear-gradient(to bottom left, #61bec7 5%, #236659);
+            border-radius: 15px 0 15px 15px;
+            padding: 20px;
+
+        }
+        .retriangle {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 20px solid #61bec7;
+            border-bottom: 0 solid transparent;
+            border-right: 18px solid transparent;
+        }
+        .from{
+            color: #dff;
+            font-size: 12px;
+        }
+        .text{
+            color: #fff;
+        }
+    </style>
+    <head>
+        <title>Messenger</title>
+        <meta charset="utf-8"/>
+        <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">-->
+    </head>
+
+    <body>
+    {% csrf_token %}
+        <main class="main">
+            <section class="room-flex-section">
+                <div class="room-section">
+                    <div class="room-box">
+                        <div class="room">Гарии</div>
+                        <div class="room">Гарии</div>
+                        <div class="room">Гарии</div>
+                        <div class="room">Гарии</div>
+                        <div class="room">Гарии</div>
+                        <div class="room">Гарии</div>
+                        <div class="room">Гарии</div>
+                        <div class="room">Гарии</div>
+                        <div class="room">Гарии</div>
+                        <div class="room">Гарии</div>
+                    </div>
+                </div>
+            </section>
+            <section class="chat-box" id="chat-box">
+                <div class="chat" id="chat">
+                    {% for m in messages %}
+                        {% if m.username == username %}
+                            <div class="remessage-block">
+                                <div class="remessage">
+                                    <div class="msg">
+                                        <div class="from">I'm</div>
+                                        <div class="text">{{ m.content }}</div>
+                                    </div>
+                                </div>
+                                <div class="retriangle"></div>
+                            </div>
+                        {% else %}
+                            <div class="message-block">
+                                <div class="triangle"></div>
+                                <div class="message">
+                                    <div class="msg">
+                                        <div class="from">{{ m.username }}</div>
+                                        <div class="text">{{ m.content }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}{% endfor %}
+                </div>
+                <footer>
+                    <div class="box-footer">
+                        <div class="box-sending">
+                            <textarea id="textarea"></textarea>
+                            <button class="button" id="button-submit">Submit</button>
+                        </div>
+                        <small class="has-text-grey-light">Your username: {{ username }}</small>
+                    </div>
+                </footer>
+            </section>
+        <header class="header">
+            <div class="box-header">
+                <h1>ChatBox</h1>
+                <a class="exit" id="exit" href="{% url 'messanger:logout' %}">Выход <br>из системы</a>
+            </div>
+        </header>
+        </main>
+    </body>
+
+       {{ room_name|json_script:"json-roomname" }}
+       {{ username|json_script:"json-username" }}
+        {% load static %}
+        <script>
+            const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
+            const userName = JSON.parse(document.getElementById('json-username').textContent);
+
+            const chatSocket = new WebSocket(
+                'ws://'
+                + window.location.host
+                + '/ws/messanger/'
+                + roomName
+                + '/'
+            );
+             //chatSocket.onopen = function(e) {
+                // makeKeyFiles(userName, roomName)
+            //}
+
+            chatSocket.onmessage = function(e) {
+                console.log('onmessage');
+
+                const data = JSON.parse(e.data);
+
+                if (data.message) {
+                    if (data.username == userName) {
+                        onReMessage(data);
+                    } else onMessage(data);
+                    //document.querySelector('#chat').innerHTML += ('<b>' + data.username + '</b>: ' + data.message + '<br>');
+                } else {
+                    alert('The message is empty!');
+                }
+
+                window.scrollTo(0, document.body.scrollHeight);
+
+            };
+
+            chatSocket.onclose = function(e) {
+                console.log('The socket close unexpectadly');
+            };
+
+            document.querySelector('#button-submit').onclick = function() {
+                const messageInputDom = document.querySelector('#textarea');
+                const message = messageInputDom.value;
+
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'username': userName,
+                    'room': roomName
+                }));
+
+                messageInputDom.value = '';
+
+            };
+
+            function onMessage(data) {
+                let mesBlock = document.createElement("div");
+                mesBlock.className = "message-block";
+                let triangleBlock = document.createElement("div");
+                triangleBlock.className = "triangle";
+                let messageBlock = document.createElement("div");
+                messageBlock.className = "message";
+                let msgBlock = document.createElement("div");
+                msgBlock.className = "msg";
+                let fromBlock = document.createElement("div");
+                fromBlock.className = "from";
+                fromBlock.innerText = data.username;
+                let textBlock = document.createElement("div");
+                textBlock.className = "text";
+                textBlock.innerText = data.message;
+
+                document.querySelector("#chat").appendChild(mesBlock);
+                mesBlock.appendChild(triangleBlock);
+                mesBlock.appendChild(messageBlock);
+                messageBlock.appendChild(msgBlock);
+                msgBlock.appendChild(fromBlock);
+                msgBlock.appendChild(textBlock);
+            };
+
+            function onReMessage(data) {
+                let remesblock = document.createElement("div");
+                remesblock.className = "remessage-block";
+                let remessangesReBlock = document.createElement("div");
+                remessangesReBlock.className = "remessage";
+                let msgReBlock = document.createElement("div");
+                msgReBlock.className = "msg";
+                let fromReBlock = document.createElement("div");
+                fromReBlock.className = "from";
+                fromReBlock.innerText = "I'm";
+                let textReBlock = document.createElement("div");
+                textReBlock.className = "text";
+                textReBlock.innerText = data.message;
+                let retriangleReBlock = document.createElement("div");
+                retriangleReBlock.className = "retriangle";
+
+                document.querySelector("#chat").appendChild(remesblock);
+                remesblock.appendChild(remessangesReBlock);
+                remessangesReBlock.appendChild(msgReBlock);
+                msgReBlock.appendChild(fromReBlock);
+                msgReBlock.appendChild(textReBlock);
+                remesblock.appendChild(retriangleReBlock);
+            };
+        </script>
+</html>

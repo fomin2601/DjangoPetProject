@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html>
+<title>Login</title>
+<style>
+    body {
+        background-color: #ffc;
+        width: 30%;
+        margin: 20px auto;
+        color: #410c65;
+    }
+
+    .header {
+        position: fixed;
+        padding: 10px 0;
+        height: 50px;
+    }
+
+    h1 {
+        margin: 3px 0;
+    }
+
+    .start {
+        display: block;
+        padding-top: 80px;
+    }
+
+    .field {
+        max-width: 400px;
+        margin: auto;
+    }
+
+    p {
+        margin: 0 0 7px;
+        font-size: 16px;
+    }
+
+    input {
+        font-family: "Roboto", sans-serif;
+        background: #f2f2f2;
+        outline: 0;
+        border-color: #dbdbdb;
+        margin: 0 0 15px;
+        width: 100%;
+        padding: 15px;
+        box-sizing: border-box;
+        font-size: 14px;
+        border-radius: 5px;
+        transition: all 0.3ms;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+    }
+
+    input:focus {
+        border-color: #7e2caa;
+    }
+
+    .control-button {
+        margin-top: 20px;
+    }
+
+    .button {
+        font-family: "Roboto", sans-serif;
+        text-transform: uppercase;
+        background: #69218f;
+        border: 0;
+        padding: 15px 30px;
+        color: #FFFFFF;
+        font-size: 14px;
+        transition: all 0.3ms;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .button:hover, .button:active, .button:focus {
+        background: #410c65;
+    }
+
+    .error-text {
+        margin-top: 20px;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #8d2f2f;
+        color: #dcc8ef;
+    }
+
+</style>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Box</title>
+</head>
+
+<body>
+{% csrf_token %}
+<header class="header">
+    <h1>ChatBox</h1>
+</header>
+<div class="start">
+    <div class="column" id="column">
+
+        <div class="field">
+            <p>Username</p>
+            <div class="control">
+                <input class="input" type="text" placeholder="Username" id="username-input">
+            </div>
+        </div>
+        <div class="field">
+            <p>Password</p>
+            <div class="control">
+                <input class="input" type="text" placeholder="Password" id="password-input">
+            </div>
+        </div>
+        <div class="field">
+            <p>Room name</p>
+            <div class="control">
+                <input class="input" type="text" placeholder="Room name" id="room-name-input">
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="control-button">
+                <a class="button" id="room-name-submit">Submit</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{% load static %}
+<script src="{% static 'jquery-3.6.0.js' %}"></script>
+<script type="module" src="{% static 'key_generation.js' %}"></script>
+<script>
+
+    $(document).ready(function () {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length +
+                            1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        function sameOrigin(url) {
+            var host = document.location.host;
+            var protocol = document.location.protocol;
+            var sr_origin = '//' + host;
+            var origin = protocol + sr_origin;
+            return (url == origin || url.slice(0, origin.length + 1) == origin + '/') || (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                !(/^(\/\/|http:|https:).*/.test(url));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    xhr.setRequestHeader('X-CSRFToken',
+                        $('input[name="csrfmiddlewaretoken"]').val());
+                }
+            }
+        });
+        $('#room-name-submit').click(function () {
+            let url = '/messanger/' + document.querySelector('#room-name-input').value.toString();
+            $.ajax({
+                type: "POST",
+                url: "ajax_login/",
+                data: {
+                    "username": document.querySelector('#username-input').value,
+                    "password": document.querySelector('#password-input').value,
+                    "roomname": document.querySelector('#room-name-input').value,
+                },
+                success: function (data) {
+                    //alert('Done')
+                    makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
+                    $(location).attr('href', url);
+                    //window.location.replace(roomName);
+                },
+                error: function (data) {
+                    // предупредим об ошибке
+                    if (document.querySelector('#error-text')) document.querySelector('#column').removeChild(errorText)
+                    if (data.status == 400) {
+                        let errorText = document.createElement('div')
+                        document.querySelector('#column').appendChild(errorText)
+                        errorText.className = "error-text"
+                        errorText.id = "error-text"
+                        errorText.innerText = "Неверно введён логин или пароль"
+                    }
+                }
+
+                //alert(data.status);
+
+        });
+        //alert('fsdsdsddf');
+    });
+    })
+    ;
+    document.querySelector('#room-name-input').focus();
+
+    document.querySelector('#room-name-submit').onclick = function (e) {
+        var roomName = document.querySelector('#room-name-input').value;
+        var userName = document.querySelector('#username-input').value;
+        var password = document.querySelector('#password-input').value;
+
+
+        //window.location.replace(roomName + '/?username=' + userName);
+        //
+    };
+</script>
+</html>
