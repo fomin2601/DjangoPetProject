@@ -37,7 +37,7 @@ def ajax_login(request):
         if user is not None:
             auth.login(request, user)
             if next != '':
-                # return render(request, 'chat/room.html', {'room_name': room_name, 'username': user.username, 'password': user.password})
+                #  return render(request, 'chat/room.html', {'room_name': room_name, 'username': user.username, 'password': user.password})
                 return JsonResponse({'s': 'logined_next'}, status=200)
             else:
                 return JsonResponse({'s': 'logined_done'}, status=200)
