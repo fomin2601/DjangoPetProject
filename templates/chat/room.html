@@ -214,16 +214,9 @@
             <section class="room-flex-section">
                 <div class="room-section">
                     <div class="room-box">
-                        <div class="room">Гарии</div>
-                        <div class="room">Гарии</div>
-                        <div class="room">Гарии</div>
-                        <div class="room">Гарии</div>
-                        <div class="room">Гарии</div>
-                        <div class="room">Гарии</div>
-                        <div class="room">Гарии</div>
-                        <div class="room">Гарии</div>
-                        <div class="room">Гарии</div>
-                        <div class="room">Гарии</div>
+                        {% for room in user_rooms %}
+                            <a class="room" href="{%url 'messanger:room' room %}">{{ room }}</a>
+                        {% endfor %}
                     </div>
                 </div>
             </section>

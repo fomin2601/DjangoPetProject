@@ -1,9 +1,9 @@
 from django.contrib import auth
 from django.http import JsonResponse
-from django.shortcuts import redirect, Http404, HttpResponse
+from django.shortcuts import redirect, HttpResponse
 from django.shortcuts import render
 
-from .models import Message
+from .models import Message, Room
 
 
 def index(request):
@@ -14,8 +14,13 @@ def room(request, room_name):
     if request.user.is_authenticated:
         username = request.user.username
         messages = Message.objects.filter(room=room_name)
-
-        return render(request, 'chat/room.html', {'room_name': room_name, 'username': username, 'messages': messages})
+        user_id = request.user.id
+        user_rooms = Room.objects.values_list('id', 'allowed_users')
+        user_rooms = {str(room_number): allowed_users.split('|') for room_number, allowed_users in user_rooms}
+        user_rooms = [key for key, vals in user_rooms.items() if str(user_id) in vals]
+        return render(request, 'chat/room.html',
+                      {'room_name': room_name, 'username': username, 'messages': messages, 'user_rooms': user_rooms,
+                       'user_id': user_id})
     else:
         return redirect('messanger:index')
 
