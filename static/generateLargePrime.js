@@ -52,7 +52,7 @@ function isPrime(num) {
 export function generateLargePrime(keysize) {
     while (true) {
         //let num = BigInt(Math.floor(Math.random() * ((2**keysize) - 2 ** (keysize - 1)) + 2 ** (keysize - 1)))
-        let num = generateRandomBigInt( BigInt(2 ** (keysize - 1)), BigInt(2 ** keysize))
+        let num = generateRandomBigInt( BigInt(2n ** BigInt(keysize - 1)), BigInt(2n ** BigInt(keysize)))
         if (isPrime(num)) {
             return num
         }
