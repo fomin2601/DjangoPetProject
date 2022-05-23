@@ -38,7 +38,7 @@ function findModInverse(a, m) {
 }
 
 window.makeKeyFiles = function (username, room) {
-    let keySize = 1024
+    let keySize = 20
     let namePublicKey = String(`${username}_${room}_pubkey`)
     let namePrivateKey = String(`${username}_${room}_privkey`)
     if (localStorage.getItem(namePublicKey) && localStorage.getItem(namePrivateKey)) return 0

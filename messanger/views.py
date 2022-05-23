@@ -4,6 +4,7 @@ from django.shortcuts import redirect, HttpResponse
 from django.shortcuts import render
 
 from .models import Message, Room
+from django.contrib.auth.models import User
 
 
 def index(request):
@@ -18,9 +19,11 @@ def room(request, room_name):
         user_rooms = Room.objects.values_list('id', 'allowed_users')
         user_rooms = {str(room_number): allowed_users.split('|') for room_number, allowed_users in user_rooms}
         user_rooms = [key for key, vals in user_rooms.items() if str(user_id) in vals]
+        all_users = User.objects.values('username')
+        #all_users = [u_name for u_name in all_users]
         return render(request, 'chat/room.html',
                       {'room_name': room_name, 'username': username, 'messages': messages, 'user_rooms': user_rooms,
-                       'user_id': user_id})
+                       'all_users': all_users})
     else:
         return redirect('messanger:index')
 

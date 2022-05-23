@@ -11,14 +11,14 @@ function rabinMiller(num) {
 
     for (let j = 0; j < 5; j++) {
         //let a = Math.floor(Math.random() * (num - 1 - 2) + 2)
-        let a = generateRandomBigInt(BigInt(2), num-1)
+        let a = generateRandomBigInt(BigInt(2), num-1n)
         let v = (a ** s) % num
         if (v !== 1n) {
             let i = 0n
-            while (v !== (num - 1)) {
-                if (i === (t - 1)) return false
+            while (v !== (num - 1n)) {
+                if (i === (t - 1n)) return false
                 else {
-                    i = i + 1
+                    i = i + 1n
                     v = (v ** 2n) % num
                 }
             }
@@ -41,9 +41,9 @@ function isPrime(num) {
         911n, 919n, 929n, 937n, 941n, 947n, 953n, 967n, 971n, 977n, 983n, 991n, 997n]
     //if (num in lowPrimes) return true
     //let prime = BigInt(2)
-    for (let prime = 0n; prime < (lowPrimes.length + 1); prime++) {
+    for (let prime = 0; prime < lowPrimes.length; prime++) {
         if (num == lowPrimes[prime]) return true
-        if (num % lowPrimes[prime] == 0n) return false
+        if (BigInt(num) % lowPrimes[prime] === 0n) return false
     }
     return rabinMiller(num)
 }

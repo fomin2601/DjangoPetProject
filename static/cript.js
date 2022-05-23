@@ -1,7 +1,7 @@
 //import sys
 //import { generateLargePrime, generateRandomBigInt } from './generateLargePrime.js'
 
-const DEFAULT_BLOCK_SIZE = 128  // Размер блока по умолчанию составляет 128 байт
+/*const DEFAULT_BLOCK_SIZE = 128  // Размер блока по умолчанию составляет 128 байт
 const BYTE_SIZE = 256  // 1 байт по умолчанию имеет 256 различных значений
 
 
@@ -121,3 +121,4 @@ def readKeyFile(keyFilename):
     fo.close()
     keySize, n, EorD = content.split(',')
     return (int(keySize), int(n), int(EorD))
+*/
