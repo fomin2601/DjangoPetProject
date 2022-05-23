@@ -595,38 +595,6 @@
                     }
                 }
             });
-            /*$('#new-room-name').click(function () {
-                let url = '/messanger/' + document.querySelector('#room-name-input').value.toString();
-                $.ajax({
-                    type: "POST",
-                    url: "ajax_login/",
-                    data: {
-                        'userNewRoom': usernameNewRoom,
-                        'newRoom': newRoomName.value,
-                    },
-                    success: function (data) {
-                        //alert('Done')
-                        //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
-                        $(location).attr('href', url);
-                        //window.location.replace(roomName);
-                    },
-                    error: function (data) {
-                        // предупредим об ошибке
-                        if (document.querySelector('#error-text')) document.querySelector('#column').removeChild(errorText)
-                        if (data.status == 400) {
-                            let errorText = document.createElement('div')
-                            document.querySelector('#column').appendChild(errorText)
-                            errorText.className = "error-text"
-                            errorText.id = "error-text"
-                            errorText.innerText = "Неверно введён логин или пароль"
-                        }
-                    }
-
-                    //alert(data.status);
-
-                })
-            });
-            */
 
             function sendNewRoom() {
                 buttonAdd.onclick = function () {
@@ -638,20 +606,18 @@
                         }
                         if (newRoomName.value) {
                             userList.style.display = "none";
-                            let url = '/messanger/' + document.querySelector('#new-room-name').value.toString();
                             $.ajax({
                                 type: "POST",
-                                url: "ajax_login/",
+                                url: "{% url 'messanger:ajax_new_room'%}",
                                 data: {
-                                    'userNewRoom': usernameNewRoom,
+                                    'userNewRoom': usernameNewRoom.join('|'),
                                     'newRoom': newRoomName.value,
                                 },
                                 success: function (data) {
-                                    //alert('Done')
-                                    //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
-                                    $(location).attr('href', url);
-                                    usernameNewRoom = []
-                                    //window.location.replace(roomName);
+                                    alert(data.success_message);
+                                },
+                                error: function (data){
+                                    alert(data.error_message)
                                 },
                             })
                         } else {
@@ -726,16 +692,12 @@
                             //let url = '/messanger/' + document.querySelector('#new-room-name').value.toString();
                             $.ajax({
                                 type: "POST",
-                                url: "ajax_login/",
+                                url: "{% url 'messanger:ajax_add_user_to_room'%}",
                                 data: {
-                                    'newUser': newUsernameHeader
+                                    'newUser': newUsernameHeader.join('|'),
+                                    'room': {{ room_name }},
                                 },
                                 success: function (data) {
-                                    //alert('Done')
-                                    //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
-                                    //$(location).attr('href', url);
-                                    //window.location.replace(roomName);
-                                    //"участник ${newUsernameHeader} добавлен к чату"
                                     newUsernameHeader = []
                                     for (let i = 0; i < newUsernameHeader.length; i++) {
                                         let newUser = document.createElement("p");
