@@ -15,13 +15,12 @@ def room(request, room_name):
     if request.user.is_authenticated:
         username = request.user.username
         messages = Message.objects.filter(room=room_name)
-        user_id = request.user.id
+        user = request.user.username
         user_rooms = Room.objects.values_list('id', 'allowed_users')
         user_rooms = {str(room_number): allowed_users.split('|') for room_number, allowed_users in user_rooms}
-        user_rooms = [key for key, vals in user_rooms.items() if str(user_id) in vals]
+        user_rooms = [key for key, vals in user_rooms.items() if str(user) in vals]
         all_users = User.objects.values('username')
         super_user = Room.objects.filter(room=room_name)
-        print(Room.objects.filter(room=room_name).values('host_user')[0]['host_user'])
         # all_users = [u_name for u_name in all_users]
         return render(request, 'chat/room.html',
                       {'room_name': room_name, 'username': username, 'messages': messages, 'user_rooms': user_rooms,
