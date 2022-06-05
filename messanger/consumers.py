@@ -2,8 +2,8 @@ import json
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-import encrypt_by_alena.key_generation
-from .models import Message
+
+from .models import Message, Room
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -32,6 +32,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = data['message']
         username = data['username']
         room = data['room']
+        iv = data['iv']
+        userNewRoom = data['userNewRoom']  # Список новых пользователей в группе с разделителем "|"
+        newRoom = data['newRoom']
+        rq = data['rq']
+        usernameSuper = data['usernameSuper']
+        publicKeyRSA = data['publicKeyRSA']
+        encryptionKeyAES = data['encryptionKeyAES']
 
         await self.save_message(username, room, message)
 
@@ -49,13 +56,56 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event['message']
         username = event['username']
+        iv = event['iv']
 
-        # Send message to WebSocket
+        # Отправка сообщения в канал веб-сокета
         await self.send(text_data=json.dumps({
             'message': message,
-            'username': username
+            'username': username,
+            'iv': iv
         }))
+
 
     @sync_to_async
     def save_message(self, username, room, message):
         Message.objects.create(username=username, room=room, content=message)
+
+class SuperUserConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.user = self.scope['url_route']['kwargs']['user_name']
+        print(self.user)
+        self.user_room_name = f"notif_{self.room_name}_for_{self.user}"
+
+        # Join connection to superuser
+        await self.channel_layer.group_add(
+            self.user_room_name,
+            self.channel_name
+        )
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Discinnect from superuser
+        await self.channel_layer.group_discard(
+            self.user_room_name,
+            self.channel_name
+        )
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        username = data['username']
+        room = data['room']
+        rq = data['rq']
+        usernameSuper = data['usernameSuper']
+        publicKeyRSA = data['publicKeyRSA']
+        encryptionKeyAES = data['encryptionKeyAES']
+
+        # Send message to room group
+        await self.channel_layer.group_send(
+            self.user_room_name,
+            {
+                'type': 'chat_message',
+                'username': username
+            }
+        )

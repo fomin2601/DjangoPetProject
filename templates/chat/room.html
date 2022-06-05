@@ -370,6 +370,7 @@
                         <button class="button-plus-header" id="button-plus-header">
                             <div class="plus">+</div>
                         </button>
+                        <!--<p class="this-room-name">Room name: {{ room }}</p>-->
                         <div class="user_list-header" id="user-list-header">
                             {% for u_name in all_users %}
                                 <div class="user-add-header" id="user-add-header">
@@ -453,11 +454,16 @@
 
        {{ room_name|json_script:"json-roomname" }}
        {{ username|json_script:"json-username" }}
+       {{ superuser.host_user|json_script:"json-superuser" }}
+
         {% load static %}
         <script src="{% static 'jquery-3.6.0.js' %}"></script>
+        <script src="{% static 'node_modules' %}"></script>
+        <script type="module" src="{% static 'new_crypt.js' %}"></script>
         <script>
             const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
             const userName = JSON.parse(document.getElementById('json-username').textContent);
+
 
 
             const chatSocket = new WebSocket(
@@ -471,6 +477,17 @@
                 // makeKeyFiles(userName, roomName)
             //}
 
+            if (!(localStorage.getItem(`keyAES_${roomName}`))) {
+                let publicKeyRSA = genarationKeyRSA(roomName);
+                alert('Cvetkov the best!')
+                    chatSocket.send(JSON.stringify({
+                        'publicKeyRSA': publicKeyRSA,
+                        //'usernameSuper': usernameSuper,
+                        'username': userName,
+                        'room': roomName,
+                    }));
+            }
+
             window.scrollTo(0, document.body.scrollHeight);
 
             chatSocket.onmessage = function(e) {
@@ -479,12 +496,30 @@
                 const data = JSON.parse(e.data);
 
                 if (data.message) {
+                    data.msgDecrypt = decryptMessage(data.message, data.iv, roomName);
                     if (data.username == userName) {
                         onReMessage(data);
                     } else onMessage(data);
                     //document.querySelector('#chat').innerHTML += ('<b>' + data.username + '</b>: ' + data.message + '<br>');
                 } else {
                     alert('The message is empty!');
+                }
+
+                if(data.publicKeyRSA) {
+                    let sendKeyAES = JSON.parse(localStorage.getItem(`keyAES_${data.room}`))
+                    let encryptionKeyAES = encrypt(sendKeyAES, data.publicKeyRSA);
+                    chatSocket.send(JSON.stringify({
+                        'encryptionKeyAES': encryptionKeyAES,
+                        'username': data.username,
+                        //'usernameSuper': data.usernameSuper,
+                        'room': data.room,
+                    }));
+                }
+
+                //запись симметричного ключа AES в localStorage
+                if(data.encryptionKeyAES) {
+                    let resultKeyAES = decrypt(data.encryptionKeyAES, data.room)
+                    localStorage.setItem(`keyAES_${data.room}`, JSON.stringify(resultKeyAES));
                 }
 
                 window.scrollTo(0, document.body.scrollHeight);
@@ -498,11 +533,14 @@
             document.querySelector('#button-submit').onclick = function() {
                 const messageInputDom = document.querySelector('#textarea');
                 const message = messageInputDom.value;
+                const msgEncrypt = encryptMessage(message, roomName
+                );
 
                 chatSocket.send(JSON.stringify({
-                    'message': message,
+                    'message': msgEncrypt.encrypted,
                     'username': userName,
-                    'room': roomName
+                    'room': roomName,
+                    'iv': msgEncrypt.iv
                 }));
 
                 messageInputDom.value = '';
@@ -595,6 +633,38 @@
                     }
                 }
             });
+            /*$('#new-room-name').click(function () {
+                let url = '/messanger/' + document.querySelector('#room-name-input').value.toString();
+                $.ajax({
+                    type: "POST",
+                    url: "ajax_login/",
+                    data: {
+                        'userNewRoom': usernameNewRoom,
+                        'newRoom': newRoomName.value,
+                    },
+                    success: function (data) {
+                        //alert('Done')
+                        //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
+                        $(location).attr('href', url);
+                        //window.location.replace(roomName);
+                    },
+                    error: function (data) {
+                        // предупредим об ошибке
+                        if (document.querySelector('#error-text')) document.querySelector('#column').removeChild(errorText)
+                        if (data.status == 400) {
+                            let errorText = document.createElement('div')
+                            document.querySelector('#column').appendChild(errorText)
+                            errorText.className = "error-text"
+                            errorText.id = "error-text"
+                            errorText.innerText = "Неверно введён логин или пароль"
+                        }
+                    }
+
+                    //alert(data.status);
+
+                })
+            });
+            */
 
             function sendNewRoom() {
                 buttonAdd.onclick = function () {
@@ -604,29 +674,38 @@
                                 usernameNewRoom.push(userAdd[i].querySelector("#username-add").innerText);
                             }
                         }
-                        if (newRoomName.value) {
-                            userList.style.display = "none";
-                            $.ajax({
-                                type: "POST",
-                                url: "{% url 'messanger:ajax_new_room'%}",
-                                data: {
-                                    'userNewRoom': usernameNewRoom.join('|'),
-                                    'newRoom': newRoomName.value,
-                                },
-                                success: function (data) {
-                                    alert(data.success_message);
-                                },
-                                error: function (data){
-                                    alert(data.error_message)
-                                },
-                            })
+                        if (usernameNewRoom.length != 0) {
+                            if (newRoomName.value) {
+                                userList.style.display = "none";
+                                let url = '/messanger/' + document.querySelector('#new-room-name').value.toString();
+                                //вызываем генерацию aes
+                                $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'messanger:ajax_new_room'%}",
+                                    data: {
+                                        'userNewRoom': usernameNewRoom.join('|'),
+                                        'newRoom': newRoomName.value,
+                                    },
+                                    success: function (data) {
+                                        //alert('Done')
+                                        //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
+                                        //генерация ключа aes
+                                        localStorage.setItem(`keyAES_${newRoomName.value}`, JSON.stringify( genarationKeyAES() ));
+
+
+                                        usernameNewRoom = []
+                                        $(location).attr('href', url);
+
+                                    },
+                                })
+                            } else {
+                                newRoomName.style.background = 'red'
+                                window.setTimeout("newRoomName.style.background = '#f2f2f2'", 1000)
+                            }
                         } else {
-                            newRoomName.style.background = 'red'
-                            window.setTimeout("newRoomName.style.background = '#f2f2f2'", 1000)
+                            alert("Участник чата не выбран");
+                            return 0
                         }
-                    } else {
-                        alert("Участник чата не выбраны");
-                        return 0
                     }
                 }
             }
@@ -687,7 +766,7 @@
                                 newUsernameHeader.push(userAddHeader[i].querySelector("#username-add-header").innerText);
                             }
                         }
-                        if (newUsernameHeader) {
+                        if (newUsernameHeader.length != 0) {
                             userListHeader.style.display = "none";
                             //let url = '/messanger/' + document.querySelector('#new-room-name').value.toString();
                             $.ajax({
@@ -698,6 +777,11 @@
                                     'room': {{ room_name }},
                                 },
                                 success: function (data) {
+                                    //alert('Done')
+                                    //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
+                                    //$(location).attr('href', url);
+                                    //window.location.replace(roomName);
+                                    //"участник ${newUsernameHeader} добавлен к чату"
                                     newUsernameHeader = []
                                     for (let i = 0; i < newUsernameHeader.length; i++) {
                                         let newUser = document.createElement("p");
@@ -708,8 +792,7 @@
                                 },
                             })
                         } else {
-                            newRoomName.style.background = 'red'
-                            window.setTimeout("newRoomName.style.background = '#f2f2f2'", 1000)
+                            alert("Участник не выбран");
                         }
                     } else {
                         alert("Участник не выбран");
@@ -737,7 +820,7 @@
                 fromBlock.innerText = data.username;
                 let textBlock = document.createElement("div");
                 textBlock.className = "text";
-                textBlock.innerText = data.message;
+                textBlock.innerText = data.msgDecrypt;
 
                 document.querySelector("#chat").appendChild(mesBlock);
                 mesBlock.appendChild(triangleBlock);
@@ -759,7 +842,7 @@
                 fromReBlock.innerText = "I'm";
                 let textReBlock = document.createElement("div");
                 textReBlock.className = "text";
-                textReBlock.innerText = data.message;
+                textReBlock.innerText = data.msgDecrypt + data.iv;
                 let retriangleReBlock = document.createElement("div");
                 retriangleReBlock.className = "retriangle";
 

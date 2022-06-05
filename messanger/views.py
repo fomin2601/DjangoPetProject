@@ -15,20 +15,19 @@ def room(request, room_name):
     if request.user.is_authenticated:
         username = request.user.username
         messages = Message.objects.filter(room=room_name)
-        user_rooms = Room.objects.values_list('room', 'allowed_users')
+        user_id = request.user.id
+        user_rooms = Room.objects.values_list('id', 'allowed_users')
         user_rooms = {str(room_number): allowed_users.split('|') for room_number, allowed_users in user_rooms}
-        user_rooms = [key for key, vals in user_rooms.items() if username in vals]
+        user_rooms = [key for key, vals in user_rooms.items() if str(user_id) in vals]
         all_users = User.objects.values('username')
+        super_user = Room.objects.filter(room=room_name)
+        print(Room.objects.filter(room=room_name).values('host_user')[0]['host_user'])
+        # all_users = [u_name for u_name in all_users]
         return render(request, 'chat/room.html',
                       {'room_name': room_name, 'username': username, 'messages': messages, 'user_rooms': user_rooms,
-                       'all_users': all_users})
+                       'all_users': all_users, 'superuser': super_user})
     else:
         return redirect('messanger:index')
-
-
-def logout(request):
-    auth.logout(request)
-    return redirect('messanger:index')
 
 
 def ajax_login(request):
@@ -43,6 +42,7 @@ def ajax_login(request):
         if user is not None:
             auth.login(request, user)
             if next != '':
+                #  return render(request, 'chat/room.html', {'room_name': room_name, 'username': user.username, 'password': user.password})
                 return JsonResponse({'s': 'logined_next'}, status=200)
             else:
                 return JsonResponse({'s': 'logined_done'}, status=200)
@@ -53,6 +53,11 @@ def ajax_login(request):
         return HttpResponse('Ошибка запроса', status=500)
 
 
+def logout(request):
+    auth.logout(request)
+    return redirect('messanger:index')
+
+
 def ajax_new_room(request):
     if request.method == 'POST':
         new_room_users = request.POST.get('userNewRoom')
@@ -60,7 +65,8 @@ def ajax_new_room(request):
         if Room.objects.filter(room=new_room_number):
             return JsonResponse({'error_message': 'Room already exist'}, status=403)
         else:
-            new_room = Room(room=new_room_number, host_user=User.objects.get(id=request.user.id), allowed_users=new_room_users)
+            new_room = Room(room=new_room_number, host_user=User.objects.get(id=request.user.id),
+                            allowed_users=new_room_users)
             new_room.save()
             return JsonResponse({'success_message': f'Room {new_room_number} created'}, status=200)
     else:
