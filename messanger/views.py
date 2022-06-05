@@ -60,7 +60,7 @@ def logout(request):
 def ajax_new_room(request):
     if request.method == 'POST':
         new_room_users = request.POST.get('userNewRoom')
-        new_room_number = int(request.POST.get('newRoom'))
+        new_room_number = request.POST.get('newRoom')
         if Room.objects.filter(room=new_room_number):
             return JsonResponse({'error_message': 'Room already exist'}, status=403)
         else:
