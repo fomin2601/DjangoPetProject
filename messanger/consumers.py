@@ -2,8 +2,8 @@ import json
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-import encrypt_by_alena.key_generation
-from .models import Message
+
+from .models import Message, Room
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -14,6 +14,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Join room
         await self.channel_layer.group_add(
             self.room_group_name,
+            self.channel_name
+        )
+
+        self.user = Room.objects.filter(room=self.room_name).values('host_user')[0]['host_user']
+        print(self.user)
+        self.user_room_name = f"notif_{self.room_name}_for_superuser"
+
+        # Notification room name
+        await self.channel_layer.group_add(
+            self.user_room_name,
             self.channel_name
         )
 
@@ -32,6 +42,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = data['message']
         username = data['username']
         room = data['room']
+        iv = data['iv']
+        userNewRoom = data['userNewRoom']  # Список новых пользователей в группе с разделителем "|"
+        newRoom = data['newRoom']
+        rq = data['rq']
+        usernameSuper = data['usernameSuper']
+        publicKeyRSA = data['publicKeyRSA']
+        encryptionKeyAES = data['encryptionKeyAES']
 
         await self.save_message(username, room, message)
 
@@ -49,11 +66,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event['message']
         username = event['username']
+        iv = event['iv']
 
-        # Send message to WebSocket
+        # Отправка сообщения в канал веб-сокета
         await self.send(text_data=json.dumps({
             'message': message,
-            'username': username
+            'username': username,
+            'iv': iv
         }))
 
     @sync_to_async
