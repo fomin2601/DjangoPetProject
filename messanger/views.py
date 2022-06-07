@@ -1,10 +1,10 @@
 from django.contrib import auth
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import redirect, HttpResponse
 from django.shortcuts import render
 
 from .models import Message, Room
-from django.contrib.auth.models import User
 
 
 def index(request):
@@ -15,12 +15,13 @@ def room(request, room_name):
     if request.user.is_authenticated:
         username = request.user.username
         messages = Message.objects.filter(room=room_name)
-        user = request.user.username
+        user_id = request.user.id
         user_rooms = Room.objects.values_list('id', 'allowed_users')
         user_rooms = {str(room_number): allowed_users.split('|') for room_number, allowed_users in user_rooms}
-        user_rooms = [key for key, vals in user_rooms.items() if str(user) in vals]
+        user_rooms = [key for key, vals in user_rooms.items() if str(user_id) in vals]
         all_users = User.objects.values('username')
         super_user = Room.objects.filter(room=room_name)
+        print(Room.objects.filter(room=room_name).values('host_user')[0]['host_user'])
         # all_users = [u_name for u_name in all_users]
         return render(request, 'chat/room.html',
                       {'room_name': room_name, 'username': username, 'messages': messages, 'user_rooms': user_rooms,
@@ -60,7 +61,7 @@ def logout(request):
 def ajax_new_room(request):
     if request.method == 'POST':
         new_room_users = request.POST.get('userNewRoom')
-        new_room_number = request.POST.get('newRoom')
+        new_room_number = int(request.POST.get('newRoom'))
         if Room.objects.filter(room=new_room_number):
             return JsonResponse({'error_message': 'Room already exist'}, status=403)
         else:

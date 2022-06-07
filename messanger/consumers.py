@@ -17,6 +17,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
+        self.user = Room.objects.filter(room=self.room_name).values('host_user')[0]['host_user']
+        print(self.user)
+        self.user_room_name = f"notif_{self.room_name}_for_superuser"
+
+        # Notification room name
+        await self.channel_layer.group_add(
+            self.user_room_name,
+            self.channel_name
+        )
+
         await self.accept()
 
     async def disconnect(self, close_code):
