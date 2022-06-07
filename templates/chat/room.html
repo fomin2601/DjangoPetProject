@@ -1,857 +1,1127 @@
 <!DOCTYPE html>
 <html>
-    <style>
-        body {
-            background-color: #ffc;
-            margin: 20px auto;
-            color: #410c65;
-        }
-        .header {
-            position: fixed;
-            top: 0;
-            height: 50px;
-            background-color: #ffc;
-            width: 100%;
-            height: 50px;
-        }
-        .box-header {
-            max-width: 700px;
-            width: 70%;
-            margin: auto;
-            min-width: 300px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-        }
-        .exit{
-            text-decoration: none;
-            color: #410c65;
-            padding: 7px;
-            transition: all 0.3ms;
+<style>
+    body {
+        background-color: #ffc;
+        margin: 20px auto;
+        color: #410c65;
+    }
 
-        }
-        .exit:hover {
-            background-color: #ae8acb;
-            border-radius: 5px;
-        }
-        h1 {
-            margin: 3px 0;
-        }
+    .header {
+        position: fixed;
+        top: 0;
+        height: 50px;
+        background-color: #ffc;
+        width: 100%;
+        height: 50px;
+    }
 
-        .main{
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: nowrap;
-        }
-        .room-flex-section {
+    .box-header {
+        max-width: 700px;
+        width: 70%;
+        margin: auto;
+        min-width: 300px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
 
-        }
-        .room-section {
-            /*background: linear-gradient(to bottom left, #61bec7 5%, #236659);
-            */
-            position: fixed;
-            width: 30%;
-            background: linear-gradient(to bottom left, #61bec7 5%, #236659);
-            height: 100vh;
-            overflow-y: scroll;
-        }
-        .room-box {
-            /*position: fixed;*/
-            margin: 50px 10px 0 10px;
-            width: 90%;
-            /*top: 55px;
-            left: 10px;*/
-        }
-        .room {
-            background-color: beige;
-            height: 50px;
-            width: 98%;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            box-shadow: 0 0.5em 1em -0.065em rgb(5 5 5 / 10%), 0 0 0 1px rgb(5 5 5 / 2%);
-            color: #4a4a4a;
-            display: block;
-            padding: 7px;
-            text-decoration: none;
-            font-size: 16px;
-        }
+    .has-text-grey-light {
+        font-size: 17px;
+        margin-top: 17px;
+    }
 
-        .chat-box {
-            margin-top: 45px;
-            margin-bottom: 83px;
-            width: 70%;
-        }
-        .header-chat {
-            position: fixed;
-            top: 50px;
-            width: 100%;
-            height: 60px;
-            background: #5ebac3;
-        }
-        .add-user-in-chat {
-            top: 100px;
-            right: 20px;
-        }
-        .user_list-header {
-            display: none;
-            width: 220px;
-            height: 300px;
-            background-color: #f8fdc9;
-            border-radius: 10px;
-            margin-top: 15px;
-            margin-right: 15px;
-            flex-direction: column;
-            box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-            overflow-y: scroll;
-        }
-        .user-add-header {
-            display: flex;
-            width: 100%;
-            height: 40px;
-            border-bottom: 2px solid #444;
-            cursor: pointer;
-            margin-top: 10px
-        }
-        .button-plus-header {
-            border-radius: 20px;
-            width: 40px;
-            height: 40px;
-            margin-top: 10px;
-            background-color: #69218f;
-            border: #410c65;
-            box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-            cursor: pointer;
-        }
-        .button-add-header {
-            position: sticky;
-            top:  263px;
-            left: 120px;
-            border-radius: 5px;
-            width: 141px;
-            height: 25px;
-            background-color: #69218f;
-            border: #410c65;
-            box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-            cursor: pointer;
-            color: white;
-            padding: 2px 0 0;
-        }
+    .exit {
+        text-decoration: none;
+        color: #410c65;
+        padding: 17px;
+        transition: all 0.3ms;
 
-        .chat {
-            min-height: 490px;
-            width: 100%;
-            box-sizing: border-box;
-            background-color: #fff;
-            border-radius: 6px;
-            box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 2%);
-            color: #4a4a4a;
-            display: block;
-            padding: 1.25rem;
-        }
-        footer {
-            background-color: #f8fdc9;
-            position: fixed;
-            bottom: 0;
-            width: 70%;
-        }
-        .box-footer {
-            padding-bottom: 10px;
-            padding-top: 2px;
-            margin-left: 7px;
+    }
 
-        }
-        .box-sending {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        p {
-            margin: 0 0 7px;
-            font-size: 16px;
-        }
-        textarea {
-            display: block;
-            flex-grow: 20;
-            font-family: "Roboto", sans-serif;
-            background: #f2f2f2;
-            outline: 0;
-            border-color: #dbdbdb;
-            padding: 15px;
-            box-sizing: border-box;
-            font-size: 14px;
-            border-radius: 5px;
-            transition: all 0.3ms;
-            box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-        }
-        textarea:hover, textarea:active {
-            border-color: #919191;
-        }
-        textarea:focus {
-            border-color: #7e2caa;
-        }
-        .button {
-            margin-left: 10px;
-            font-family: "Roboto", sans-serif;
-            text-transform: uppercase;
-            flex-grow: 1;
-            background: #5f0c9d;
-            border: 0;
-            padding: 15px 30px;
-            color: #FFFFFF;
-            font-size: 14px;
-            transition: all 0.3ms;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .button:hover, .button:active, .button:focus {
-            background: #5735be;
-        }
+    .exit:hover {
+        background-color: #ae8acb;
+        border-radius: 5px;
+    }
+
+    h1 {
+        margin: 3px 0;
+    }
+
+    .main {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+    }
+
+    .room-flex-section {
+
+    }
+
+    .room-section {
+        /*background: linear-gradient(to bottom left, #61bec7 5%, #236659);
+        */
+        position: fixed;
+        width: 30%;
+        background: linear-gradient(to bottom left, #61bec7 5%, #236659);
+        height: 100vh;
+        overflow-y: scroll;
+    }
+
+    .room-box {
+        /*position: fixed;*/
+        margin: 50px 10px 0 10px;
+        width: 90%;
+        /*top: 55px;
+        left: 10px;*/
+    }
+
+    .room {
+        background-color: beige;
+        height: 50px;
+        width: 98%;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        box-shadow: 0 0.5em 1em -0.065em rgb(5 5 5 / 10%), 0 0 0 1px rgb(5 5 5 / 2%);
+        color: #4a4a4a;
+        display: block;
+        padding: 7px;
+        text-decoration: none;
+        font-size: 16px;
+    }
 
 
+    .chat-box {
+        margin-top: 45px;
+        margin-bottom: 83px;
+        width: 70%;
+    }
 
-        .message-block {
-            display: flex;
-            justify-content: flex-start;
-            margin: 20px 28px 20px 10px;
-        }
-        .message {
-            background: linear-gradient(to bottom right, #5f0c9d, #5544de);
-            border-radius: 0 15px 15px 15px;
-            width: 400px;
-            padding: 20px;
-        }
-        .triangle {
-            content: '';
-            display: block;
-            width: 0;
-            height: 0;
-            border-top: 0 solid transparent;
-            border-bottom: 20px solid transparent;
-            border-right: 18px solid #5b0b98;
-        }
-        .remessage-block {
-            display: flex;
-            justify-content: flex-end;
-            margin: 20px 10px 20px 28px;
+    .header-chat {
+        position: fixed;
+        display: flex;
+        justify-content: space-around;
+        top: 50px;
+        width: 70%;
+        height: 60px;
+        background: #5ebac3;
+    }
 
-        }
-        .remessage {
-            width: 400px;
-            background: linear-gradient(to bottom left, #61bec7 5%, #236659);
-            border-radius: 15px 0 15px 15px;
-            padding: 20px;
+    .this-room-name {
+        font-size: 18px;
+        height: 15px;
+        padding: 7px;
+    }
 
-        }
-        .retriangle {
-            content: '';
-            display: block;
-            width: 0;
-            height: 0;
-            border-top: 20px solid #61bec7;
-            border-bottom: 0 solid transparent;
-            border-right: 18px solid transparent;
-        }
-        .from{
-            color: #dff;
-            font-size: 12px;
-        }
-        .text{
-            color: #fff;
-        }
+    .button-user-room {
+        border-radius: 5px;
+        padding: 5px;
+        background-color: #ae8acb;
+        border: #410c65;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+        cursor: pointer;
+        width: 120px;
+    }
 
-        .creat-chat {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-        }
-        .button-plus {
-            border-radius: 25px;
-            width: 50px;
-            height: 50px;
-            background-color: #69218f;
-            border: #410c65;
-            box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-            cursor: pointer;
-        }
-        .plus {
-            color: #fff;
-            font-size: 30px;
-            text-shadow:  rgb(10 10 10 / 10%) 0 0.065em 0.165em;
-        }
-        .user_list {
-            display: none;
-            width: 220px;
-            height: 300px;
-            background-color: #f8fdc9;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            margin-left: 15px;
-            flex-direction: column;
-            box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-            overflow-y: scroll;
-        }
-        .new-room-name {
-            width: 100%;
-            position: sticky;
-            top: 0;
-            font-family: "Roboto", sans-serif;
-            background: #f2f2f2;
-            outline: 0;
-            border: solid 2px #dbdbdb;
-            padding: 7px;
-            box-sizing: border-box;
-            font-size: 14px;
-            border-radius: 11px 0 0;
-            transition: all 0.3ms;
-            box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-        }
-        input:focus {
-           border-color: #7e2caa;
-        }
-        .user-add {
-            display: flex;
-            width: 100%;
-            height: 40px;
-            border-bottom: 2px solid #444;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .marker {
-            display: none;
-            width: 22px;
-            height: 22px;
-            border-radius: 11px;
-            background-color: #236659;
-            color: white;
-        }
-        .tick {
-            margin: 1px 0 0 4px;
-        }
-        .username-add{
-            margin-left: 20px;
-            padding-bottom: 10px;
-        }
-        .button-add {
-            position: fixed;
-            bottom:  90px;
-            left: 155px;
-            border-radius: 5px;
-            width: 80px;
-            height: 25px;
-            background-color: #69218f;
-            border: #410c65;
-            box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-            cursor: pointer;
-            color: white;
-            padding: 2px 0 0;
-        }
-    </style>
-    <head>
-        <title>Messenger</title>
-        <meta charset="utf-8"/>
-        <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">-->
-    </head>
+    .list-user-room {
+        display: none;
+        width: 220px;
+        height: 300px;
+        background-color: #f8fdc9;
+        border-radius: 10px;
+        margin-top: 15px;
+        margin-right: 15px;
+        flex-direction: column;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+        overflow-y: scroll;
+    }
 
-    <body>
-    {% csrf_token %}
-        <main class="main">
-            <section class="room-flex-section">
-                <div class="room-section">
-                    <div class="room-box">
-                        {% for room in user_rooms %}
-                            <a class="room" href="{%url 'messanger:room' room %}">{{ room }}</a>
-                        {% endfor %}
+    .sort {
+        width: 100px;
+        padding: 10px;
+        background: #69218f;
+        border: 0;
+        color: #FFFFFF;
+        font-size: 14px;
+        transition: all 0.3ms;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .add-user-in-chat {
+        top: 100px;
+        right: 20px;
+    }
+
+    .user_list-header {
+        display: none;
+        width: 220px;
+        height: 300px;
+        background-color: #f8fdc9;
+        border-radius: 10px;
+        margin-top: 15px;
+        margin-right: 15px;
+        flex-direction: column;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+        overflow-y: scroll;
+    }
+
+    .user-add-header {
+        display: flex;
+        width: 100%;
+        height: 40px;
+        border-bottom: 2px solid #444;
+        cursor: pointer;
+        margin-top: 10px
+    }
+
+    .button-plus-header {
+        border-radius: 20px;
+        width: 40px;
+        height: 40px;
+        margin-top: 10px;
+        background-color: #69218f;
+        border: #410c65;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+        cursor: pointer;
+    }
+
+    .button-add-header {
+        position: sticky;
+        top: 263px;
+        left: 120px;
+        border-radius: 5px;
+        width: 141px;
+        height: 25px;
+        background-color: #69218f;
+        border: #410c65;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+        cursor: pointer;
+        color: white;
+        padding: 2px 0 0;
+    }
+
+    .chat {
+        min-height: 490px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: #fff;
+        border-radius: 6px;
+        box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 2%);
+        color: #4a4a4a;
+        display: block;
+        padding: 1.25rem;
+    }
+
+    footer {
+        background-color: #f8fdc9;
+        position: fixed;
+        bottom: 0;
+        width: 70%;
+    }
+
+    .box-footer {
+        padding-bottom: 10px;
+        padding-top: 2px;
+        margin-left: 7px;
+
+    }
+
+    .box-sending {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    p {
+        margin: 0 0 7px;
+        font-size: 16px;
+    }
+
+    textarea {
+        display: block;
+        flex-grow: 20;
+        font-family: "Roboto", sans-serif;
+        background: #f2f2f2;
+        outline: 0;
+        border-color: #dbdbdb;
+        padding: 15px;
+        box-sizing: border-box;
+        font-size: 14px;
+        border-radius: 5px;
+        transition: all 0.3ms;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+    }
+
+    textarea:hover, textarea:active {
+        border-color: #919191;
+    }
+
+    textarea:focus {
+        border-color: #7e2caa;
+    }
+
+    .button {
+        margin-left: 10px;
+        font-family: "Roboto", sans-serif;
+        text-transform: uppercase;
+        flex-grow: 1;
+        background: #5f0c9d;
+        border: 0;
+        padding: 15px 30px;
+        color: #FFFFFF;
+        font-size: 14px;
+        transition: all 0.3ms;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .button:hover, .button:active, .button:focus {
+        background: #5735be;
+    }
+
+
+    .message-block {
+        display: flex;
+        justify-content: flex-start;
+        margin: 20px 28px 20px 10px;
+    }
+
+    .message {
+        background: linear-gradient(to bottom right, #5f0c9d, #5544de);
+        border-radius: 0 15px 15px 15px;
+        width: 400px;
+        padding: 20px;
+    }
+
+    .triangle {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 0 solid transparent;
+        border-bottom: 20px solid transparent;
+        border-right: 18px solid #5b0b98;
+    }
+
+    .remessage-block {
+        display: flex;
+        justify-content: flex-end;
+        margin: 20px 10px 20px 28px;
+
+    }
+
+    .remessage {
+        width: 400px;
+        background: linear-gradient(to bottom left, #61bec7 5%, #236659);
+        border-radius: 15px 0 15px 15px;
+        padding: 20px;
+
+    }
+
+    .retriangle {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-top: 20px solid #61bec7;
+        border-bottom: 0 solid transparent;
+        border-right: 18px solid transparent;
+    }
+
+    .from {
+        color: #dff;
+        font-size: 12px;
+    }
+
+    .text {
+        color: #fff;
+    }
+
+    .creat-chat {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+    }
+
+    .button-plus {
+        border-radius: 25px;
+        width: 50px;
+        height: 50px;
+        background-color: #69218f;
+        border: #410c65;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+        cursor: pointer;
+    }
+
+    .plus {
+        color: #fff;
+        font-size: 30px;
+        text-shadow: rgb(10 10 10 / 10%) 0 0.065em 0.165em;
+    }
+
+    .user_list {
+        display: none;
+        width: 220px;
+        height: 300px;
+        background-color: #f8fdc9;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        margin-left: 15px;
+        flex-direction: column;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+        overflow-y: scroll;
+    }
+
+    .new-room-name {
+        width: 100%;
+        position: sticky;
+        top: 0;
+        font-family: "Roboto", sans-serif;
+        background: #f2f2f2;
+        outline: 0;
+        border: solid 2px #dbdbdb;
+        padding: 7px;
+        box-sizing: border-box;
+        font-size: 14px;
+        border-radius: 11px 0 0;
+        transition: all 0.3ms;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+    }
+
+    input:focus {
+        border-color: #7e2caa;
+    }
+
+    .user-add {
+        display: flex;
+        width: 100%;
+        height: 40px;
+        border-bottom: 2px solid #444;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .user-check {
+        display: flex;
+        width: 100%;
+        height: 40px;
+        border-bottom: 2px solid #444;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .marker {
+        display: none;
+        width: 22px;
+        height: 22px;
+        border-radius: 11px;
+        background-color: #236659;
+        color: white;
+    }
+
+    .tick {
+        margin: 1px 0 0 4px;
+    }
+
+    .username-add {
+        margin-left: 20px;
+        padding-bottom: 10px;
+    }
+
+    .button-add {
+        position: fixed;
+        bottom: 90px;
+        left: 155px;
+        border-radius: 5px;
+        width: 80px;
+        height: 25px;
+        background-color: #69218f;
+        border: #410c65;
+        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
+        cursor: pointer;
+        color: white;
+        padding: 2px 0 0;
+    }
+
+    .important {
+        background: linear-gradient(to bottom right, #8c1d00, #ff0101);
+    }
+
+    .important-re-tr {
+        border-top: 20px solid #cd0d01;
+    }
+
+    .important-tr {
+        border-right: 18px solid #8c1d00;
+    }
+
+    .is-important-block {
+        display: flex;
+        margin-top: 5px;
+    }
+
+    .tick-block {
+        width: 15px;
+        height: 15px;
+        border: 1px solid #000;
+        background-color: white;
+    }
+
+    .is-important-text {
+        font-size: 16px;
+        margin-left: 5px;
+
+    }
+
+    .date {
+        margin-left: 270px;
+        font-size: 12px;
+        color: #dadada;
+    }
+</style>
+<head>
+    <title>Messenger</title>
+    <meta charset="utf-8"/>
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">-->
+</head>
+
+<body>
+{% csrf_token %}
+<main class="main">
+    <section class="room-flex-section">
+        <div class="room-section">
+            <div class="room-box">
+                {% for room in user_rooms %}
+                    <a class="room" href="{% url 'messanger:room' room %}">{{ room }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <section class="chat-box" id="chat-box">
+        <div class="header-chat">
+            <section class="add-user-in-chat">
+                <button class="button-plus-header" id="button-plus-header">
+                    <div class="plus">+</div>
+                </button>
+                <!--<p class="this-room-name">Room name: {# # #}{ room }}</p>-->
+                <div class="user_list-header" id="user-list-header">
+                    {% for u_name in all_users %}
+                        <div class="user-add-header" id="user-add-header">
+                            <div class="marker" id="marker-header">
+                                <div class="tick">&#10003</div>
+                            </div>
+                            <div class="username-add" id="username-add-header">
+                                {{ u_name.username }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="button-add-header" id="button-add-header">
+                        Add User(s) in Room
                     </div>
                 </div>
             </section>
-            <section class="chat-box" id="chat-box">
-                <div class="header-chat">
-                    <section class="add-user-in-chat">
-                        <button class="button-plus-header" id="button-plus-header">
-                            <div class="plus">+</div>
-                        </button>
-                        <!--<p class="this-room-name">Room name: {{ room }}</p>-->
-                        <div class="user_list-header" id="user-list-header">
-                            {% for u_name in all_users %}
-                                <div class="user-add-header" id="user-add-header">
-                                    <div class="marker" id="marker-header">
-                                        <div class="tick">&#10003</div>
-                                    </div>
-                                    <div class="username-add" id="username-add-header">
-                                        {{ u_name.username }}
-                                    </div>
+            <div class="info-about-room">
+                <div class="this-room-name">{{ room_name }}</div>
+                <section class="check-user-room">
+                    <div class="button-user-room">Check users room</div>
+                    <div class="list-user-room">
+                        {% for u_name in superuser.allowed_users_as_list %}
+                            <div class="user-check">
+                                <div class="username-add">
+                                    {{ u_name }}
                                 </div>
-                            {% endfor %}
-                            <div class="button-add-header" id="button-add-header">
-                                Add User(s) in Room
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </section>
+            </div>
+            <button class="sort">Important<br>messages</button>
+        </div>
+        <div class="chat" id="chat">
+            {% for m in messages %}
+                {% if m.username == username %}
+                    {% if m.is_important %}
+                        <div class="remessage-block">
+                            <div class="remessage important">
+                                <div class="msg">
+                                    <div class="from">I'm</div>
+                                    <div class="text">{{ m.content }}</div>
+                                    <div class="date">{{ m.date_added }}</div>
+                                </div>
+                            </div>
+                            <div class="retriangle important-re-tr"></div>
+                        </div>
+                    {% else %}
+                        <div class="remessage-block not-important">
+                            <div class="remessage">
+                                <div class="msg">
+                                    <div class="from">I'm</div>
+                                    <div class="text">{{ m.content }}</div>
+                                    <div class="date">{{ m.date_added }}</div>
+                                </div>
+                            </div>
+                            <div class="retriangle"></div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% if m.is_important %}
+                        <div class="message-block">
+                            <div class="triangle important-tr"></div>
+                            <div class="message important">
+                                <div class="msg">
+                                    <div class="from">{{ m.username }}</div>
+                                    <div class="text">{{ m.content }}</div>
+                                    <div class="date">{{ m.date_added }}</div>
+                                </div>
                             </div>
                         </div>
-                    </section>
-                </div>
-                <div class="chat" id="chat">
-                    {% for m in messages %}
-                        {% if m.username == username %}
-                            <div class="remessage-block">
-                                <div class="remessage">
-                                    <div class="msg">
-                                        <div class="from">I'm</div>
-                                        <div class="text">{{ m.content }}</div>
-                                    </div>
-                                </div>
-                                <div class="retriangle"></div>
-                            </div>
+                    {% else %}
+                        {% if  m.username == 'system'%}
+                            <p> {{ m.content }}</p>
                         {% else %}
-                            <div class="message-block">
+                            <div class="message-block not-important">
                                 <div class="triangle"></div>
                                 <div class="message">
                                     <div class="msg">
                                         <div class="from">{{ m.username }}</div>
                                         <div class="text">{{ m.content }}</div>
+                                        <div class="date">{{ m.date_added }}</div>
                                     </div>
                                 </div>
                             </div>
-                        {% endif %}{% endfor %}
+                            {% endif %}
+                    {% endif %}
+                {% endif %}{% endfor %}
+        </div>
+        <footer>
+            <div class="box-footer">
+                <div class="box-sending">
+                    <textarea id="textarea"></textarea>
+                    <button class="button" id="button-submit">Submit</button>
                 </div>
-                <footer>
-                    <div class="box-footer">
-                        <div class="box-sending">
-                            <textarea id="textarea"></textarea>
-                            <button class="button" id="button-submit">Submit</button>
-                        </div>
-                        <small class="has-text-grey-light">Your username: {{ username }}</small>
-                    </div>
-                </footer>
-            </section>
-            <header class="header">
-                <div class="box-header">
-                     <h1>ChatBox</h1>
-                     <a class="exit" id="exit" href="{% url 'messanger:logout' %}">Выход <br>из системы</a>
+                <div class="is-important-block">
+                    <div class="tick-block"></div>
+                    <small class="is-important-text">Is important</small>
                 </div>
-            </header>
-        </main>
-        <section class="creat-chat" id="creat-chat">
-            <div class="user_list" id="user-list">
-                <input class="new-room-name" id="new-room-name" type="text" placeholder="Введите название нового чата">
-                {% for u_name in all_users %}
-                <div class="user-add" id="user-add">
-                    <div class="marker" id="marker">
-                        <div class="tick">&#10003</div>
-                    </div>
-                    <div class="username-add" id="username-add">
-                        {{ u_name.username }}
-                    </div>
+
+            </div>
+        </footer>
+    </section>
+    <header class="header">
+        <div class="box-header">
+            <h1>ChatBox</h1>
+            <small class="has-text-grey-light">Your username: {{ username }}</small>
+            <a class="exit" id="exit" href="{% url 'messanger:logout' %}">Logout</a>
+        </div>
+    </header>
+</main>
+<section class="creat-chat" id="creat-chat">
+    <div class="user_list" id="user-list">
+        <input class="new-room-name" id="new-room-name" type="text" placeholder="Введите название нового чата">
+        {% for u_name in all_users %}
+            <div class="user-add" id="user-add">
+                <div class="marker" id="marker">
+                    <div class="tick">&#10003</div>
                 </div>
-                {% endfor %}
-                <div class="button-add" id="button-add">
-                    Create Chat
+                <div class="username-add" id="username-add">
+                    {{ u_name.username }}
                 </div>
             </div>
-            <button class="button-plus" id="button-plus">
-                <div class="plus">+</div>
-            </button>
-        </section>
-    </body>
+        {% endfor %}
+        <div class="button-add" id="button-add">
+            Create Chat
+        </div>
+    </div>
+    <button class="button-plus" id="button-plus">
+        <div class="plus">+</div>
+    </button>
+</section>
+</body>
 
-       {{ room_name|json_script:"json-roomname" }}
-       {{ username|json_script:"json-username" }}
-       {{ superuser.host_user|json_script:"json-superuser" }}
+{{ room_name|json_script:"json-roomname" }}
+{{ username|json_script:"json-username" }}
 
-        {% load static %}
-        <script src="{% static 'jquery-3.6.0.js' %}"></script>
-        <script src="{% static 'node_modules' %}"></script>
-        <script type="module" src="{% static 'new_crypt.js' %}"></script>
-        <script>
-            const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
-            const userName = JSON.parse(document.getElementById('json-username').textContent);
-
+{% load static %}
+<script src="{% static 'jquery-3.6.0.js' %}"></script>
+<!--<script src="{//% static 'node_modules' %}"></script>-->
+<script type="module" src="{% static 'new_crypt.js' %}"></script>
+<script>
+    const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
+    const userName = JSON.parse(document.getElementById('json-username').textContent);
 
 
-            const chatSocket = new WebSocket(
-                'ws://'
-                + window.location.host
-                + '/ws/messanger/'
-                + roomName
-                + '/'
-            );
-             //chatSocket.onopen = function(e) {
-                // makeKeyFiles(userName, roomName)
-            //}
-
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/messanger/'
+        + roomName
+        + '/'
+    );
+    chatSocket.onopen = function (e) {
+        $(document).ready(async function () {
             if (!(localStorage.getItem(`keyAES_${roomName}`))) {
-                let publicKeyRSA = genarationKeyRSA(roomName);
-                alert('Cvetkov the best!')
-                    chatSocket.send(JSON.stringify({
-                        'publicKeyRSA': publicKeyRSA,
-                        //'usernameSuper': usernameSuper,
-                        'username': userName,
-                        'room': roomName,
-                    }));
-            }
+                let keyPair = await generateRSA();
+                let publicRSA = await exportPublicRSA(keyPair);
+                let privateRSA = await exportPrivateRSA(keyPair);
 
-            window.scrollTo(0, document.body.scrollHeight);
-
-            chatSocket.onmessage = function(e) {
-                console.log('onmessage');
-
-                const data = JSON.parse(e.data);
-
-                if (data.message) {
-                    data.msgDecrypt = decryptMessage(data.message, data.iv, roomName);
-                    if (data.username == userName) {
-                        onReMessage(data);
-                    } else onMessage(data);
-                    //document.querySelector('#chat').innerHTML += ('<b>' + data.username + '</b>: ' + data.message + '<br>');
-                } else {
-                    alert('The message is empty!');
-                }
-
-                if(data.publicKeyRSA) {
-                    let sendKeyAES = JSON.parse(localStorage.getItem(`keyAES_${data.room}`))
-                    let encryptionKeyAES = encrypt(sendKeyAES, data.publicKeyRSA);
-                    chatSocket.send(JSON.stringify({
-                        'encryptionKeyAES': encryptionKeyAES,
-                        'username': data.username,
-                        //'usernameSuper': data.usernameSuper,
-                        'room': data.room,
-                    }));
-                }
-
-                //запись симметричного ключа AES в localStorage
-                if(data.encryptionKeyAES) {
-                    let resultKeyAES = decrypt(data.encryptionKeyAES, data.room)
-                    localStorage.setItem(`keyAES_${data.room}`, JSON.stringify(resultKeyAES));
-                }
-
-                window.scrollTo(0, document.body.scrollHeight);
-
-            };
-
-            chatSocket.onclose = function(e) {
-                console.log('The socket close unexpectadly');
-            };
-
-            document.querySelector('#button-submit').onclick = function() {
-                const messageInputDom = document.querySelector('#textarea');
-                const message = messageInputDom.value;
-                const msgEncrypt = encryptMessage(message, roomName
-                );
-
+                // сохраняем в локалсторадже
+                window.localStorage.setItem(`privateKeyRSA_${roomName}`, JSON.stringify(privateRSA));
+                /* отправляем только суперЮзеру
                 chatSocket.send(JSON.stringify({
-                    'message': msgEncrypt.encrypted,
-                    'username': userName,
+                    'publicKeyRSA': publicRSA,\
                     'room': roomName,
-                    'iv': msgEncrypt.iv
+                    */
+            }
+        })
+    }
+
+
+    /*if (!(localStorage.getItem(`keyAES_${roomName}`))) {
+        let publicKeyRSA = window.genarationKeyRSA(roomName);
+        alert('Cvetkov the best!')
+            chatSocket.send(JSON.stringify({
+                'publicKeyRSA': publicKeyRSA,
+                //'usernameSuper': usernameSuper,
+                'username': userName,
+                'room': roomName,
+            }));
+    }*/
+
+    let isImportantBlock = document.querySelector('.tick-block')
+    isImportantBlock.count = 1;
+    isImportantBlock.onclick = function () {
+        if (isImportantBlock.count == 1) {
+            isImportantBlock.style.backgroundColor = '#bd1d17';
+        } else {
+            isImportantBlock.style.backgroundColor = '#fff';
+        }
+        isImportantBlock.count *= -1
+    }
+
+
+    window.scrollTo(0, document.body.scrollHeight);
+
+    chatSocket.onmessage = function (e) {
+        console.log('onmessage');
+
+        const data = JSON.parse(e.data);
+
+        if (data.message) {
+            if (data.username == 'system') {
+                let newUser = document.createElement("p");
+                newUser.className = "new-user"
+                newUser.innerText = data.message
+                document.querySelector("#chat").appendChild(newUser);
+            } else {
+                //data.msgDecrypt = decryptMessage(data.message, data.iv, roomName);
+                if (data.username == userName) {
+                    onReMessage(data);
+                } else onMessage(data);
+            }
+        }
+
+
+        $(document).ready(async function () {
+            if (data.publicKeyRSA) {
+                let importedAES = await importAES(
+                    JSON.parse(window.localStorage.getItem(`keyAES_${data.room}`))
+                );
+                let encryptionKeyAES = await encryptRSA(data.publicKeyRSA, importedAES);
+                chatSocket.send(JSON.stringify({
+                    'encryptionKeyAES': encryptionKeyAES,
+                    'username': data.username,
+                    'room': data.room,
                 }));
-
-                messageInputDom.value = '';
-
-            };
-
-            // список людей для создания чата
-            let addUserList = document.querySelector("#button-plus")
-            let userList = document.querySelector("#user-list")
-            addUserList.count = 1;
-            addUserList.onclick = function () {
-                if (addUserList.count == 1) {
-                    userList.style.display = "flex";
-                    for (let i = 0; i < userAdd.length; i++) {
-                        userAdd[i].count = 1
-
-                        sendNewRoom()
-                    }
-                }
-                else {
-                    for (let i = 0; i < userAdd.length; i++) {
-                        userAdd[i].querySelector('#marker').style.display = 'none'
-                    }
-                    newRoomName.value = ''
-                    userList.style.display = "none";
-                }
-                addUserList.count *= -1
             }
+        })
 
-            let userAdd = document.querySelectorAll('.user-add')
+        //запись симметричного ключа AES в localStorage
+        $(document).ready(async function () {
+            if (data.encryptionKeyAES) {
+                let importedPrivate = JSON.parse(window.localStorage.getItem(`privateKeyRSA_${roomName}`))
+                let resultKeyAES = await decryptRSA(importedPrivate, data.encryptionKeyAES);
+                localStorage.setItem(`keyAES_${data.room}`, JSON.stringify(resultKeyAES));
+            //удалить закрытый рша здесь
+            }
+        })
 
-            /*for (let i = 0; i < userAdd.length; i++) {
-                userAdd[i].count = 1
-            }*/
+        window.scrollTo(0, document.body.scrollHeight);
 
+    };
+
+    chatSocket.onclose = function (e) {
+        console.log('The socket close unexpectadly');
+    };
+
+    document.querySelector('#button-submit').onclick = function () {
+        const messageInputDom = document.querySelector('#textarea');
+        const message = messageInputDom.value;
+        let isImportant
+        if (isImportantBlock.count == -1) {
+            isImportant = true
+            isImportantBlock.count = 1
+            isImportantBlock.style.backgroundColor = '#fff'
+        } else isImportant = false
+        //const msgEncrypt = encryptMessage(message, roomName);
+
+        chatSocket.send(JSON.stringify({
+            //'message': msgEncrypt.encrypted,
+            'message': message,
+            'username': userName,
+            'room': roomName,
+            //'iv': msgEncrypt.iv,
+            'isImportant': isImportant,
+        }));
+
+        messageInputDom.value = '';
+
+    };
+
+    //Сортировка важных сообщений
+    let buttonSort = document.querySelector('.sort')
+    buttonSort.count = 1;
+    buttonSort.onclick = function () {
+        let notImportant = document.querySelectorAll('.not-important')
+        if (buttonSort.count == 1) {
+            for (let i = 0; i < notImportant.length; i++) {
+                notImportant[i].style.display = 'none'
+            }
+            buttonSort.style.backgroundColor = '#8c1d00';
+        } else {
+            for (let i = 0; i < notImportant.length; i++) {
+                notImportant[i].style.display = 'flex'
+            }
+            buttonSort.style.backgroundColor = '#69218f';
+        }
+        buttonSort.count *= -1
+    }
+
+    //Посмотреть пользователей комнаты
+    let buttonUserRoom = document.querySelector('.button-user-room')
+    buttonUserRoom.count = 1
+    buttonUserRoom.onclick = function () {
+        if (buttonSort.count == 1) {
+            document.querySelector('.list-user-room').style.display = 'flex'
+        } else {
+            document.querySelector('.list-user-room').style.display = 'none'
+        }
+        buttonSort.count *= -1
+    }
+
+    // список людей для создания чата
+    let addUserList = document.querySelector("#button-plus")
+    let userList = document.querySelector("#user-list")
+    addUserList.count = 1;
+    addUserList.onclick = function () {
+        if (addUserList.count == 1) {
+            userList.style.display = "flex";
             for (let i = 0; i < userAdd.length; i++) {
-                userAdd[i].addEventListener('click', (e) => {
-                    if (userAdd[i].count == 1) {
-                        userAdd[i].querySelector('#marker').style.display = 'block'
-                    } else {
-                        userAdd[i].querySelector('#marker').style.display = 'none'
-                    }
-                    userAdd[i].count *= -1;
-                //let usernameAdd = userAdd[i].querySelector("#username-add").value;
-                //for (let i = 0; i < userAdd.length; i++) {
-                //userAdd[i].count = 1
-                })
-            }
-            let buttonAdd = document.querySelector('#button-add')
-            let usernameNewRoom = []
-            let newRoomName = document.querySelector('#new-room-name')
-
-            //ajax
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length +
-                                1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-            var csrftoken = getCookie('csrftoken');
-
-            function csrfSafeMethod(method) {
-                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            }
-
-            function sameOrigin(url) {
-                var host = document.location.host;
-                var protocol = document.location.protocol;
-                var sr_origin = '//' + host;
-                var origin = protocol + sr_origin;
-                return (url == origin || url.slice(0, origin.length + 1) == origin + '/') || (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-                    !(/^(\/\/|http:|https:).*/.test(url));
-            }
-
-            $.ajaxSetup({
-                beforeSend: function (xhr, settings) {
-                    if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-                        xhr.setRequestHeader('X-CSRFToken',
-                            $('input[name="csrfmiddlewaretoken"]').val());
-                    }
-                }
-            });
-            /*$('#new-room-name').click(function () {
-                let url = '/messanger/' + document.querySelector('#room-name-input').value.toString();
-                $.ajax({
-                    type: "POST",
-                    url: "ajax_login/",
-                    data: {
-                        'userNewRoom': usernameNewRoom,
-                        'newRoom': newRoomName.value,
-                    },
-                    success: function (data) {
-                        //alert('Done')
-                        //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
-                        $(location).attr('href', url);
-                        //window.location.replace(roomName);
-                    },
-                    error: function (data) {
-                        // предупредим об ошибке
-                        if (document.querySelector('#error-text')) document.querySelector('#column').removeChild(errorText)
-                        if (data.status == 400) {
-                            let errorText = document.createElement('div')
-                            document.querySelector('#column').appendChild(errorText)
-                            errorText.className = "error-text"
-                            errorText.id = "error-text"
-                            errorText.innerText = "Неверно введён логин или пароль"
-                        }
-                    }
-
-                    //alert(data.status);
-
-                })
-            });
-            */
-
-            function sendNewRoom() {
-                buttonAdd.onclick = function () {
-                    if (userAdd) {
-                        for (let i = 0; i < userAdd.length; i++) {
-                            if (userAdd[i].count == -1) {
-                                usernameNewRoom.push(userAdd[i].querySelector("#username-add").innerText);
-                            }
-                        }
-                        if (usernameNewRoom.length != 0) {
-                            if (newRoomName.value) {
-                                userList.style.display = "none";
-                                let url = '/messanger/' + document.querySelector('#new-room-name').value.toString();
-                                //вызываем генерацию aes
-                                $.ajax({
-                                    type: "POST",
-                                    url: "{% url 'messanger:ajax_new_room'%}",
-                                    data: {
-                                        'userNewRoom': usernameNewRoom.join('|'),
-                                        'newRoom': newRoomName.value,
-                                    },
-                                    success: function (data) {
-                                        //alert('Done')
-                                        //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
-                                        //генерация ключа aes
-                                        localStorage.setItem(`keyAES_${newRoomName.value}`, JSON.stringify( genarationKeyAES() ));
-
-
-                                        usernameNewRoom = []
-                                        $(location).attr('href', url);
-
-                                    },
-                                })
-                            } else {
-                                newRoomName.style.background = 'red'
-                                window.setTimeout("newRoomName.style.background = '#f2f2f2'", 1000)
-                            }
-                        } else {
-                            alert("Участник чата не выбран");
-                            return 0
-                        }
-                    }
-                }
-            }
-
-
-
-
-
-
-            //список людей для добавления в чат
-            let addUserListHeader = document.querySelector("#button-plus-header")
-            let userListHeader = document.querySelector("#user-list-header")
-            addUserListHeader.count = 1;
-            addUserListHeader.onclick = function () {
-                if (addUserListHeader.count == 1) {
-                    userListHeader.style.display = "flex";
-                    for (let i = 0; i < userAddHeader.length; i++) {
-                        userAddHeader[i].count = 1
-
-                        sendNewUser()
-                    }
-                }
-                else {
-                    for (let i = 0; i < userAddHeader.length; i++) {
-                        userAddHeader[i].querySelector('#marker-header').style.display = 'none'
-                    }
-                    userListHeader.style.display = "none";
-                }
-                addUserListHeader.count *= -1
-            }
-
-            let userAddHeader = document.querySelectorAll('.user-add-header')
-
-            /*for (let i = 0; i < userAdd.length; i++) {
                 userAdd[i].count = 1
-            }*/
 
-            for (let i = 0; i < userAddHeader.length; i++) {
-                userAddHeader[i].addEventListener('click', (e) => {
-                    if (userAddHeader[i].count == 1) {
-                        userAddHeader[i].querySelector('#marker-header').style.display = 'block'
-                    } else {
-                        userAddHeader[i].querySelector('#marker-header').style.display = 'none'
-                    }
-                    userAddHeader[i].count *= -1;
-                //let usernameAdd = userAdd[i].querySelector("#username-add").value;
-                //for (let i = 0; i < userAdd.length; i++) {
-                //userAdd[i].count = 1
-                })
+                sendNewRoom()
             }
-            let buttonAddHeader = document.querySelector('#button-add-header')
-            let newUsernameHeader = []
-            function sendNewUser() {
-                buttonAddHeader.onclick = function () {
-                    if (userAddHeader) {
-                        for (let i = 0; i < userAddHeader.length; i++) {
-                            if (userAddHeader[i].count == -1) {
-                                newUsernameHeader.push(userAddHeader[i].querySelector("#username-add-header").innerText);
-                            }
-                        }
-                        if (newUsernameHeader.length != 0) {
-                            userListHeader.style.display = "none";
-                            //let url = '/messanger/' + document.querySelector('#new-room-name').value.toString();
-                            $.ajax({
-                                type: "POST",
-                                url: "{% url 'messanger:ajax_add_user_to_room'%}",
-                                data: {
-                                    'newUser': newUsernameHeader.join('|'),
-                                    'room': {{ room_name }},
-                                },
-                                success: function (data) {
-                                    //alert('Done')
-                                    //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
-                                    //$(location).attr('href', url);
-                                    //window.location.replace(roomName);
-                                    //"участник ${newUsernameHeader} добавлен к чату"
-                                    newUsernameHeader = []
-                                    for (let i = 0; i < newUsernameHeader.length; i++) {
-                                        let newUser = document.createElement("p");
-                                        newUser.className = "new-user";
-                                        newUser.innerText = `участник ${newUsernameHeader[i]} добавлен к чату`
-                                        document.querySelector("#chat").appendChild(newUser);
-                                    }
-                                },
-                            })
-                        } else {
-                            alert("Участник не выбран");
-                        }
-                    } else {
-                        alert("Участник не выбран");
-                        return 0
-                    }
+        } else {
+            for (let i = 0; i < userAdd.length; i++) {
+                userAdd[i].querySelector('#marker').style.display = 'none'
+            }
+            newRoomName.value = ''
+            userList.style.display = "none";
+        }
+        addUserList.count *= -1
+    }
+
+    let userAdd = document.querySelectorAll('.user-add')
+
+    /*for (let i = 0; i < userAdd.length; i++) {
+        userAdd[i].count = 1
+    }*/
+
+    for (let i = 0; i < userAdd.length; i++) {
+        userAdd[i].addEventListener('click', (e) => {
+            if (userAdd[i].count == 1) {
+                userAdd[i].querySelector('#marker').style.display = 'block'
+            } else {
+                userAdd[i].querySelector('#marker').style.display = 'none'
+            }
+            userAdd[i].count *= -1;
+            //let usernameAdd = userAdd[i].querySelector("#username-add").value;
+            //for (let i = 0; i < userAdd.length; i++) {
+            //userAdd[i].count = 1
+        })
+    }
+    let buttonAdd = document.querySelector('#button-add')
+    let usernameNewRoom = []
+    let newRoomName = document.querySelector('#new-room-name')
+
+    //ajax
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length +
+                        1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    function sameOrigin(url) {
+        var host = document.location.host;
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') || (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                xhr.setRequestHeader('X-CSRFToken',
+                    $('input[name="csrfmiddlewaretoken"]').val());
+            }
+        }
+    });
+
+    /*$('#new-room-name').click(function () {
+        let url = '/messanger/' + document.querySelector('#room-name-input').value.toString();
+        $.ajax({
+            type: "POST",
+            url: "ajax_login/",
+            data: {
+                'userNewRoom': usernameNewRoom,
+                'newRoom': newRoomName.value,
+            },
+            success: function (data) {
+                //alert('Done')
+                //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
+                $(location).attr('href', url);
+                //window.location.replace(roomName);
+            },
+            error: function (data) {
+                // предупредим об ошибке
+                if (document.querySelector('#error-text')) document.querySelector('#column').removeChild(errorText)
+                if (data.status == 400) {
+                    let errorText = document.createElement('div')
+                    document.querySelector('#column').appendChild(errorText)
+                    errorText.className = "error-text"
+                    errorText.id = "error-text"
+                    errorText.innerText = "Неверно введён логин или пароль"
                 }
             }
 
+            //alert(data.status);
+
+        })
+    });
+    */
+
+    function sendNewRoom() {
+        buttonAdd.onclick = function () {
+            if (userAdd) {
+                for (let i = 0; i < userAdd.length; i++) {
+                    if (userAdd[i].count == -1) {
+                        usernameNewRoom[0] = userName;
+                        usernameNewRoom.push(userAdd[i].querySelector("#username-add").innerText);
+                    }
+                }
+                if (usernameNewRoom.length != 0) {
+                    if (newRoomName.value) {
+                        userList.style.display = "none";
+                        let url = '/messanger/' + document.querySelector('#new-room-name').value.toString();
+                        //вызываем генерацию aes
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'messanger:ajax_new_room'%}",
+                            data: {
+                                'userNewRoom': usernameNewRoom.join('|'),
+                                'newRoom': newRoomName.value,
+                            },
+                            success: $(document).ready(async function (data) {
+                                //генерация ключа aes
+                                let key = await genarationKeyAES();
+                                // экспортируем ключ АЕС в формат, который можно сохранить в локалсторадже
+                                let exportedAES = await exportAES(key);
+                                // сохраяем ключ в локалсторадже
+                                localStorage.setItem(`keyAES_${newRoomName.value}`, JSON.stringify(exportedAES));
+                                usernameNewRoom = []
+                                $(location).attr('href', url);
+                            }),
+                        })
+                    } else {
+                        newRoomName.style.background = 'red'
+                        window.setTimeout("newRoomName.style.background = '#f2f2f2'", 1000)
+                    }
+                } else {
+                    alert("Участник чата не выбран");
+                    return 0
+                }
+            }
+        }
+    }
 
 
+    //список людей для добавления в чат
+    let addUserListHeader = document.querySelector("#button-plus-header")
+    let userListHeader = document.querySelector("#user-list-header")
+    addUserListHeader.count = 1;
+    addUserListHeader.onclick = function () {
+        if (addUserListHeader.count == 1) {
+            userListHeader.style.display = "flex";
+            for (let i = 0; i < userAddHeader.length; i++) {
+                userAddHeader[i].count = 1
+
+                sendNewUser()
+            }
+        } else {
+            for (let i = 0; i < userAddHeader.length; i++) {
+                userAddHeader[i].querySelector('#marker-header').style.display = 'none'
+            }
+            userListHeader.style.display = "none";
+        }
+        addUserListHeader.count *= -1
+    }
+
+    let userAddHeader = document.querySelectorAll('.user-add-header')
+
+    /*for (let i = 0; i < userAdd.length; i++) {
+        userAdd[i].count = 1
+    }*/
+
+    for (let i = 0; i < userAddHeader.length; i++) {
+        userAddHeader[i].addEventListener('click', (e) => {
+            if (userAddHeader[i].count == 1) {
+                userAddHeader[i].querySelector('#marker-header').style.display = 'block'
+            } else {
+                userAddHeader[i].querySelector('#marker-header').style.display = 'none'
+            }
+            userAddHeader[i].count *= -1;
+            //let usernameAdd = userAdd[i].querySelector("#username-add").value;
+            //for (let i = 0; i < userAdd.length; i++) {
+            //userAdd[i].count = 1
+        })
+    }
+    let buttonAddHeader = document.querySelector('#button-add-header')
+    let newUsernameHeader = []
+
+    function sendNewUser() {
+        buttonAddHeader.onclick = function () {
+            if (userAddHeader) {
+                for (let i = 0; i < userAddHeader.length; i++) {
+                    if (userAddHeader[i].count == -1) {
+                        newUsernameHeader.push(userAddHeader[i].querySelector("#username-add-header").innerText);
+                    }
+                }
+                if (newUsernameHeader.length != 0) {
+                    userListHeader.style.display = "none";
+                    //let url = '/messanger/' + document.querySelector('#new-room-name').value.toString();
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'messanger:ajax_add_user_to_room'%}",
+                        data: {
+                            'newUser': newUsernameHeader.join('|'),
+                            'room': '{{ room_name }}',
+                        },
+                        success: function (data) {
+                            //alert('Done')
+                            //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
+                            //$(location).attr('href', url);
+                            //window.location.replace(roomName);
+                            //"участник ${newUsernameHeader} добавлен к чату"
+                            for (let i = 0; i < newUsernameHeader.length; i++) {
+                                chatSocket.send(JSON.stringify({
+                                    'username': 'system',
+                                    'room': roomName,
+                                    'message': `участник ${newUsernameHeader[i]} добавлен к чату`,
+                                    'isImportant': false
+                                }))
+                            }
+                            newUsernameHeader = []
+                        },
+                    })
+                } else alert("Участник не выбран");
+            } else {
+                alert("Участник не выбран");
+                return 0
+            }
+        }
+    }
 
 
+    function onMessage(data) {
+        let mesBlock = document.createElement("div");
+        mesBlock.className = "message-block";
+        let triangleBlock = document.createElement("div");
+        triangleBlock.className = "triangle";
+        let messageBlock = document.createElement("div");
+        messageBlock.className = "message";
+        let msgBlock = document.createElement("div");
+        msgBlock.className = "msg";
+        let fromBlock = document.createElement("div");
+        fromBlock.className = "from";
+        fromBlock.innerText = data.username;
+        let textBlock = document.createElement("div");
+        textBlock.className = "text";
+        textBlock.innerText = data.message;
+        //textBlock.innerText = data.msgDecrypt;
+        if (data.isImportant) {
+            messageBlock.className = "message important";
+            triangleBlock.className = "triangle important-tr";
+        } else mesBlock.className = 'message-block not-important'
 
-            function onMessage(data) {
-                let mesBlock = document.createElement("div");
-                mesBlock.className = "message-block";
-                let triangleBlock = document.createElement("div");
-                triangleBlock.className = "triangle";
-                let messageBlock = document.createElement("div");
-                messageBlock.className = "message";
-                let msgBlock = document.createElement("div");
-                msgBlock.className = "msg";
-                let fromBlock = document.createElement("div");
-                fromBlock.className = "from";
-                fromBlock.innerText = data.username;
-                let textBlock = document.createElement("div");
-                textBlock.className = "text";
-                textBlock.innerText = data.msgDecrypt;
+        document.querySelector("#chat").appendChild(mesBlock);
+        mesBlock.appendChild(triangleBlock);
+        mesBlock.appendChild(messageBlock);
+        messageBlock.appendChild(msgBlock);
+        msgBlock.appendChild(fromBlock);
+        msgBlock.appendChild(textBlock);
 
-                document.querySelector("#chat").appendChild(mesBlock);
-                mesBlock.appendChild(triangleBlock);
-                mesBlock.appendChild(messageBlock);
-                messageBlock.appendChild(msgBlock);
-                msgBlock.appendChild(fromBlock);
-                msgBlock.appendChild(textBlock);
-            };
+    };
 
-            function onReMessage(data) {
-                let remesblock = document.createElement("div");
-                remesblock.className = "remessage-block";
-                let remessangesReBlock = document.createElement("div");
-                remessangesReBlock.className = "remessage";
-                let msgReBlock = document.createElement("div");
-                msgReBlock.className = "msg";
-                let fromReBlock = document.createElement("div");
-                fromReBlock.className = "from";
-                fromReBlock.innerText = "I'm";
-                let textReBlock = document.createElement("div");
-                textReBlock.className = "text";
-                textReBlock.innerText = data.msgDecrypt + data.iv;
-                let retriangleReBlock = document.createElement("div");
-                retriangleReBlock.className = "retriangle";
+    function onReMessage(data) {
+        let remesblock = document.createElement("div");
+        remesblock.className = "remessage-block";
+        let remessangesReBlock = document.createElement("div");
+        remessangesReBlock.className = "remessage";
+        let msgReBlock = document.createElement("div");
+        msgReBlock.className = "msg";
+        let fromReBlock = document.createElement("div");
+        fromReBlock.className = "from";
+        fromReBlock.innerText = "I'm";
+        let textReBlock = document.createElement("div");
+        textReBlock.className = "text";
+        //textReBlock.innerText = data.msgDecrypt;
+        textReBlock.innerText = data.message;
+        /*let dateBlock = document.createElement("div");
+        dateBlock.className = 'date';
+        dateBlock.innerText = data.date_added;*/
+        let retriangleReBlock = document.createElement("div");
+        retriangleReBlock.className = "retriangle";
+        if (data.isImportant) {
+            remessangesReBlock.className = "remessage important"
+            retriangleReBlock.className = "retriangle important-re-tr"
+        } else remesblock.className = 'remessage-block not-important'
 
-                document.querySelector("#chat").appendChild(remesblock);
-                remesblock.appendChild(remessangesReBlock);
-                remessangesReBlock.appendChild(msgReBlock);
-                msgReBlock.appendChild(fromReBlock);
-                msgReBlock.appendChild(textReBlock);
-                remesblock.appendChild(retriangleReBlock);
-            };
-        </script>
+        document.querySelector("#chat").appendChild(remesblock);
+        remesblock.appendChild(remessangesReBlock);
+        remessangesReBlock.appendChild(msgReBlock);
+        msgReBlock.appendChild(fromReBlock);
+        msgReBlock.appendChild(textReBlock);
+
+        remesblock.appendChild(retriangleReBlock);
+    };
+</script>
 </html>

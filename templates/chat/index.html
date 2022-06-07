@@ -108,16 +108,9 @@
         <div class="field">
             <p>Password</p>
             <div class="control">
-                <input class="input" type="text" placeholder="Password" id="password-input">
+                <input class="input" type="password" placeholder="Password" id="password-input">
             </div>
         </div>
-        <div class="field">
-            <p>Room name</p>
-            <div class="control">
-                <input class="input" type="text" placeholder="Room name" id="room-name-input">
-            </div>
-        </div>
-
         <div class="field">
             <div class="control-button">
                 <a class="button" id="room-name-submit">Submit</a>
@@ -172,14 +165,14 @@
             }
         });
         $('#room-name-submit').click(function () {
-            let url = '/messanger/' + document.querySelector('#room-name-input').value.toString();
+            let url = '/messanger/' + 'publicChat';
             $.ajax({
                 type: "POST",
-                url: "ajax_login/",
+                url: "{% url 'messanger:ajax_login' %}",
                 data: {
                     "username": document.querySelector('#username-input').value,
                     "password": document.querySelector('#password-input').value,
-                    "roomname": document.querySelector('#room-name-input').value,
+                    //"roomname": document.querySelector('#room-name-input').value,
                 },
                 success: function (data) {
                     //alert('Done')

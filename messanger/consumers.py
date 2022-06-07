@@ -17,16 +17,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        self.user = Room.objects.filter(room=self.room_name).values('host_user')[0]['host_user']
-        print(self.user)
-        self.user_room_name = f"notif_{self.room_name}_for_superuser"
-
-        # Notification room name
-        await self.channel_layer.group_add(
-            self.user_room_name,
-            self.channel_name
-        )
-
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -42,15 +32,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = data['message']
         username = data['username']
         room = data['room']
-        iv = data['iv']
-        userNewRoom = data['userNewRoom']  # Список новых пользователей в группе с разделителем "|"
-        newRoom = data['newRoom']
-        rq = data['rq']
-        usernameSuper = data['usernameSuper']
-        publicKeyRSA = data['publicKeyRSA']
-        encryptionKeyAES = data['encryptionKeyAES']
+        #iv = data['iv']
+        is_important = data['isImportant']
 
-        await self.save_message(username, room, message)
+        await self.save_message(username, room, message, is_important)
 
         # Send message to room group
         await self.channel_layer.group_send(
@@ -58,7 +43,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': message,
-                'username': username
+                'username': username,
+                'is_important': is_important,
             }
         )
 
@@ -66,19 +52,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event['message']
         username = event['username']
-        iv = event['iv']
+        #iv = event['iv']
+        is_important = event['is_important']
 
         # Отправка сообщения в канал веб-сокета
         await self.send(text_data=json.dumps({
             'message': message,
             'username': username,
-            'iv': iv
+            #'iv': iv,
+            'isImportant': is_important
         }))
 
 
     @sync_to_async
-    def save_message(self, username, room, message):
-        Message.objects.create(username=username, room=room, content=message)
+    def save_message(self, username, room, message, is_important):
+        Message.objects.create(username=username, room=room, content=message, is_important=is_important)
 
 class SuperUserConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -119,3 +107,5 @@ class SuperUserConsumer(AsyncWebsocketConsumer):
                 'username': username
             }
         )
+
+
