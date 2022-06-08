@@ -401,6 +401,7 @@
         cursor: pointer;
         margin-top: 10px;
     }
+
     .user-check {
         display: flex;
         width: 100%;
@@ -577,7 +578,7 @@
                             </div>
                         </div>
                     {% else %}
-                        {% if  m.username == 'system'%}
+                        {% if  m.username == 'system' %}
                             <p> {{ m.content }}</p>
                         {% else %}
                             <div class="message-block not-important">
@@ -590,7 +591,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {% endif %}
+                        {% endif %}
                     {% endif %}
                 {% endif %}{% endfor %}
         </div>
@@ -641,14 +642,16 @@
 
 {{ room_name|json_script:"json-roomname" }}
 {{ username|json_script:"json-username" }}
+{{ superuser.host_user.username|json_script:"json-superusername" }}
 
 {% load static %}
 <script src="{% static 'jquery-3.6.0.js' %}"></script>
-<!--<script src="{//% static 'node_modules' %}"></script>-->
+<script src="{% static 'keys_exchange.js' %}"></script>
 <script type="module" src="{% static 'new_crypt.js' %}"></script>
 <script>
     const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
     const userName = JSON.parse(document.getElementById('json-username').textContent);
+    const superUserName = JSON.parse(document.getElementById('json-superusername').textContent);
 
 
     const chatSocket = new WebSocket(
@@ -667,11 +670,18 @@
 
                 // сохраняем в локалсторадже
                 window.localStorage.setItem(`privateKeyRSA_${roomName}`, JSON.stringify(privateRSA));
-                /* отправляем только суперЮзеру
-                chatSocket.send(JSON.stringify({
-                    'publicKeyRSA': publicRSA,\
+                // отправляем только суперЮзеру
+                /*chatSocket.send(JSON.stringify({
+                    'publicKeyRSA': publicRSA,
                     'room': roomName,
-                    */
+                    }))*/
+                if (userName !== superUserName) {
+                    const superUserWebsocket = await connectToSuperUser();
+                    superUserWebsocket.onopen = () => sendRSAKeyToSuperUser(publicRSA, superUserWebsocket);
+                    superUserWebsocket.onclose = () => function (e) {
+                        console.log('Success exchanging');
+                    };
+                }
             }
         })
     }
@@ -721,30 +731,6 @@
             }
         }
 
-
-        $(document).ready(async function () {
-            if (data.publicKeyRSA) {
-                let importedAES = await importAES(
-                    JSON.parse(window.localStorage.getItem(`keyAES_${data.room}`))
-                );
-                let encryptionKeyAES = await encryptRSA(data.publicKeyRSA, importedAES);
-                chatSocket.send(JSON.stringify({
-                    'encryptionKeyAES': encryptionKeyAES,
-                    'username': data.username,
-                    'room': data.room,
-                }));
-            }
-        })
-
-        //запись симметричного ключа AES в localStorage
-        $(document).ready(async function () {
-            if (data.encryptionKeyAES) {
-                let importedPrivate = JSON.parse(window.localStorage.getItem(`privateKeyRSA_${roomName}`))
-                let resultKeyAES = await decryptRSA(importedPrivate, data.encryptionKeyAES);
-                localStorage.setItem(`keyAES_${data.room}`, JSON.stringify(resultKeyAES));
-            //удалить закрытый рша здесь
-            }
-        })
 
         window.scrollTo(0, document.body.scrollHeight);
 

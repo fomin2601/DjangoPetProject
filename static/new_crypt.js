@@ -108,15 +108,15 @@ window.encodeRSA = function(message) {
 }
 
 // декодирование (расшифрованное сообщение нужно ещё и раскодировать, т.е. представить в читаемом виде)
-window.decodeRSA = function(trash) {
+window.decodeRSA = function(text) {
   let dec = new TextDecoder();
 
-  return dec.decode(trash);
+  return dec.decode(text);
 }
 
 // шифрование сообщения
 window.encryptRSA = async function(key, message) {
-  let encoded = encodeRSA(message);
+  let encoded = await encodeRSA(message);
   let cipherText = await window.crypto.subtle.encrypt(
     {
       name: "RSA-OAEP",
@@ -194,7 +194,6 @@ function getMessageEncoding(message) {
 window.encryptMessage = async function(message, roomname) {
     if (!(localStorage.getItem(`keyAES_${roomname}`))) {
         alert('not key aes');
-        //let key = window.crypto.getRandomValues(new Uint8Array(12))
     } else {
         let key = JSON.parse(localStorage.getItem(`keyAES_${roomname}`))
         let iv = window.crypto.getRandomValues(new Uint8Array(12))
