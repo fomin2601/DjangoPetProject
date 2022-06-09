@@ -32,10 +32,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = data['message']
         username = data['username']
         room = data['room']
-        #iv = data['iv']
-        is_important = data['isImportant']
+        iv = data['iv']
+        userNewRoom = data['userNewRoom']  # Список новых пользователей в группе с разделителем "|"
+        newRoom = data['newRoom']
+        rq = data['rq']
+        usernameSuper = data['usernameSuper']
+        publicKeyRSA = data['publicKeyRSA']
+        encryptionKeyAES = data['encryptionKeyAES']
 
-        await self.save_message(username, room, message, is_important)
+        await self.save_message(username, room, message)
 
         # Send message to room group
         await self.channel_layer.group_send(
@@ -43,8 +48,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'chat_message',
                 'message': message,
-                'username': username,
-                'is_important': is_important,
+                'username': username
             }
         )
 
@@ -52,21 +56,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event['message']
         username = event['username']
-        #iv = event['iv']
-        is_important = event['is_important']
+        iv = event['iv']
 
         # Отправка сообщения в канал веб-сокета
         await self.send(text_data=json.dumps({
             'message': message,
             'username': username,
-            #'iv': iv,
-            'isImportant': is_important
+            'iv': iv
         }))
 
 
     @sync_to_async
-    def save_message(self, username, room, message, is_important):
-        Message.objects.create(username=username, room=room, content=message, is_important=is_important)
+    def save_message(self, username, room, message):
+        Message.objects.create(username=username, room=room, content=message)
 
 class SuperUserConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -107,5 +109,3 @@ class SuperUserConsumer(AsyncWebsocketConsumer):
                 'username': username
             }
         )
-
-

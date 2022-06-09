@@ -26,15 +26,10 @@
         justify-content: space-between;
     }
 
-    .has-text-grey-light {
-        font-size: 17px;
-        margin-top: 17px;
-    }
-
     .exit {
         text-decoration: none;
         color: #410c65;
-        padding: 17px;
+        padding: 7px;
         transition: all 0.3ms;
 
     }
@@ -90,7 +85,6 @@
         font-size: 16px;
     }
 
-
     .chat-box {
         margin-top: 45px;
         margin-bottom: 83px;
@@ -99,53 +93,10 @@
 
     .header-chat {
         position: fixed;
-        display: flex;
-        justify-content: space-around;
         top: 50px;
-        width: 70%;
+        width: 100%;
         height: 60px;
         background: #5ebac3;
-    }
-
-    .this-room-name {
-        font-size: 18px;
-        height: 15px;
-        padding: 7px;
-    }
-
-    .button-user-room {
-        border-radius: 5px;
-        padding: 5px;
-        background-color: #ae8acb;
-        border: #410c65;
-        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-        cursor: pointer;
-        width: 120px;
-    }
-
-    .list-user-room {
-        display: none;
-        width: 220px;
-        height: 300px;
-        background-color: #f8fdc9;
-        border-radius: 10px;
-        margin-top: 15px;
-        margin-right: 15px;
-        flex-direction: column;
-        box-shadow: inset 0 0.065em 0.165em rgb(10 10 10 / 5%);
-        overflow-y: scroll;
-    }
-
-    .sort {
-        width: 100px;
-        padding: 10px;
-        background: #69218f;
-        border: 0;
-        color: #FFFFFF;
-        font-size: 14px;
-        transition: all 0.3ms;
-        cursor: pointer;
-        border-radius: 5px;
     }
 
     .add-user-in-chat {
@@ -401,14 +352,6 @@
         cursor: pointer;
         margin-top: 10px;
     }
-    .user-check {
-        display: flex;
-        width: 100%;
-        height: 40px;
-        border-bottom: 2px solid #444;
-        cursor: pointer;
-        margin-top: 10px;
-    }
 
     .marker {
         display: none;
@@ -442,42 +385,6 @@
         color: white;
         padding: 2px 0 0;
     }
-
-    .important {
-        background: linear-gradient(to bottom right, #8c1d00, #ff0101);
-    }
-
-    .important-re-tr {
-        border-top: 20px solid #cd0d01;
-    }
-
-    .important-tr {
-        border-right: 18px solid #8c1d00;
-    }
-
-    .is-important-block {
-        display: flex;
-        margin-top: 5px;
-    }
-
-    .tick-block {
-        width: 15px;
-        height: 15px;
-        border: 1px solid #000;
-        background-color: white;
-    }
-
-    .is-important-text {
-        font-size: 16px;
-        margin-left: 5px;
-
-    }
-
-    .date {
-        margin-left: 270px;
-        font-size: 12px;
-        color: #dadada;
-    }
 </style>
 <head>
     <title>Messenger</title>
@@ -492,7 +399,7 @@
         <div class="room-section">
             <div class="room-box">
                 {% for room in user_rooms %}
-                    <a class="room" href="{% url 'messanger:room' room %}">{{ room }}</a>
+                    <a class="room" href="{% url 'messanger:room' room %}">Комната №{{ room }}</a>
                 {% endfor %}
             </div>
         </div>
@@ -503,7 +410,7 @@
                 <button class="button-plus-header" id="button-plus-header">
                     <div class="plus">+</div>
                 </button>
-                <!--<p class="this-room-name">Room name: {# # #}{ room }}</p>-->
+                <!--<p class="this-room-name">Room name: {{ room }}</p>-->
                 <div class="user_list-header" id="user-list-header">
                     {% for u_name in all_users %}
                         <div class="user-add-header" id="user-add-header">
@@ -520,78 +427,29 @@
                     </div>
                 </div>
             </section>
-            <div class="info-about-room">
-                <div class="this-room-name">{{ room_name }}</div>
-                <section class="check-user-room">
-                    <div class="button-user-room">Check users room</div>
-                    <div class="list-user-room">
-                        {% for u_name in superuser.allowed_users_as_list %}
-                            <div class="user-check">
-                                <div class="username-add">
-                                    {{ u_name }}
-                                </div>
-                            </div>
-                        {% endfor %}
-
-                    </div>
-                </section>
-            </div>
-            <button class="sort">Important<br>messages</button>
         </div>
         <div class="chat" id="chat">
             {% for m in messages %}
                 {% if m.username == username %}
-                    {% if m.is_important %}
-                        <div class="remessage-block">
-                            <div class="remessage important">
-                                <div class="msg">
-                                    <div class="from">I'm</div>
-                                    <div class="text">{{ m.content }}</div>
-                                    <div class="date">{{ m.date_added }}</div>
-                                </div>
+                    <div class="remessage-block">
+                        <div class="remessage">
+                            <div class="msg">
+                                <div class="from">I'm</div>
+                                <div class="text">{{ m.content }}</div>
                             </div>
-                            <div class="retriangle important-re-tr"></div>
                         </div>
-                    {% else %}
-                        <div class="remessage-block not-important">
-                            <div class="remessage">
-                                <div class="msg">
-                                    <div class="from">I'm</div>
-                                    <div class="text">{{ m.content }}</div>
-                                    <div class="date">{{ m.date_added }}</div>
-                                </div>
-                            </div>
-                            <div class="retriangle"></div>
-                        </div>
-                    {% endif %}
+                        <div class="retriangle"></div>
+                    </div>
                 {% else %}
-                    {% if m.is_important %}
-                        <div class="message-block">
-                            <div class="triangle important-tr"></div>
-                            <div class="message important">
-                                <div class="msg">
-                                    <div class="from">{{ m.username }}</div>
-                                    <div class="text">{{ m.content }}</div>
-                                    <div class="date">{{ m.date_added }}</div>
-                                </div>
+                    <div class="message-block">
+                        <div class="triangle"></div>
+                        <div class="message">
+                            <div class="msg">
+                                <div class="from">{{ m.username }}</div>
+                                <div class="text">{{ m.content }}</div>
                             </div>
                         </div>
-                    {% else %}
-                        {% if  m.username == 'system'%}
-                            <p> {{ m.content }}</p>
-                        {% else %}
-                            <div class="message-block not-important">
-                                <div class="triangle"></div>
-                                <div class="message">
-                                    <div class="msg">
-                                        <div class="from">{{ m.username }}</div>
-                                        <div class="text">{{ m.content }}</div>
-                                        <div class="date">{{ m.date_added }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
-                    {% endif %}
+                    </div>
                 {% endif %}{% endfor %}
         </div>
         <footer>
@@ -600,19 +458,14 @@
                     <textarea id="textarea"></textarea>
                     <button class="button" id="button-submit">Submit</button>
                 </div>
-                <div class="is-important-block">
-                    <div class="tick-block"></div>
-                    <small class="is-important-text">Is important</small>
-                </div>
-
+                <small class="has-text-grey-light">Your username: {{ username }}</small>
             </div>
         </footer>
     </section>
     <header class="header">
         <div class="box-header">
             <h1>ChatBox</h1>
-            <small class="has-text-grey-light">Your username: {{ username }}</small>
-            <a class="exit" id="exit" href="{% url 'messanger:logout' %}">Logout</a>
+            <a class="exit" id="exit" href="{% url 'messanger:logout' %}">Выход <br>из системы</a>
         </div>
     </header>
 </main>
@@ -638,14 +491,15 @@
     </button>
 </section>
 </body>
+{% load static %}
 
+<script src="{% static 'jquery-3.6.0.js' %}"></script>
+<script src="{% static 'node_modules' %}"></script>
+<script src="{% static 'require.js' %}"></script>
+<script type="module" src="{% static 'new_crypt.js' %}"></script>
 {{ room_name|json_script:"json-roomname" }}
 {{ username|json_script:"json-username" }}
-
-{% load static %}
-<script src="{% static 'jquery-3.6.0.js' %}"></script>
-<!--<script src="{//% static 'node_modules' %}"></script>-->
-<script type="module" src="{% static 'new_crypt.js' %}"></script>
+{{ superuser.host_user|json_script:"json-superuser" }}
 <script>
     const roomName = JSON.parse(document.getElementById('json-roomname').textContent);
     const userName = JSON.parse(document.getElementById('json-username').textContent);
@@ -658,93 +512,55 @@
         + roomName
         + '/'
     );
-    chatSocket.onopen = function (e) {
-        $(document).ready(async function () {
-            if (!(localStorage.getItem(`keyAES_${roomName}`))) {
-                let keyPair = await generateRSA();
-                let publicRSA = await exportPublicRSA(keyPair);
-                let privateRSA = await exportPrivateRSA(keyPair);
 
-                // сохраняем в локалсторадже
-                window.localStorage.setItem(`privateKeyRSA_${roomName}`, JSON.stringify(privateRSA));
-                /* отправляем только суперЮзеру
-                chatSocket.send(JSON.stringify({
-                    'publicKeyRSA': publicRSA,\
-                    'room': roomName,
-                    */
-            }
-        })
-    }
-
-
-    /*if (!(localStorage.getItem(`keyAES_${roomName}`))) {
-        let publicKeyRSA = window.genarationKeyRSA(roomName);
+    window.onload = function (){
+        if (!(localStorage.getItem(`keyAES_${roomName}`))) {
+        let publicKeyRSA = genarationKeyRSA(roomName);
         alert('Cvetkov the best!')
-            chatSocket.send(JSON.stringify({
-                'publicKeyRSA': publicKeyRSA,
-                //'usernameSuper': usernameSuper,
-                'username': userName,
-                'room': roomName,
-            }));
-    }*/
-
-    let isImportantBlock = document.querySelector('.tick-block')
-    isImportantBlock.count = 1;
-    isImportantBlock.onclick = function () {
-        if (isImportantBlock.count == 1) {
-            isImportantBlock.style.backgroundColor = '#bd1d17';
-        } else {
-            isImportantBlock.style.backgroundColor = '#fff';
-        }
-        isImportantBlock.count *= -1
+        chatSocket.send(JSON.stringify({
+            'publicKeyRSA': publicKeyRSA,
+            //'usernameSuper': usernameSuper,
+            'username': userName,
+            'room': roomName,
+        }));
+    }
     }
 
 
     window.scrollTo(0, document.body.scrollHeight);
-
+    //alert(window.generationKeyRSA);
     chatSocket.onmessage = function (e) {
         console.log('onmessage');
 
         const data = JSON.parse(e.data);
 
         if (data.message) {
-            if (data.username == 'system') {
-                let newUser = document.createElement("p");
-                newUser.className = "new-user"
-                newUser.innerText = data.message
-                document.querySelector("#chat").appendChild(newUser);
-            } else {
-                //data.msgDecrypt = decryptMessage(data.message, data.iv, roomName);
-                if (data.username == userName) {
-                    onReMessage(data);
-                } else onMessage(data);
-            }
+            data.msgDecrypt = decryptMessage(data.message, data.iv, roomName);
+            if (data.username == userName) {
+                onReMessage(data);
+            } else onMessage(data);
+            //document.querySelector('#chat').innerHTML += ('<b>' + data.username + '</b>: ' + data.message + '<br>');
+        } else {
+            alert('The message is empty!');
         }
 
 
-        $(document).ready(async function () {
-            if (data.publicKeyRSA) {
-                let importedAES = await importAES(
-                    JSON.parse(window.localStorage.getItem(`keyAES_${data.room}`))
-                );
-                let encryptionKeyAES = await encryptRSA(data.publicKeyRSA, importedAES);
-                chatSocket.send(JSON.stringify({
-                    'encryptionKeyAES': encryptionKeyAES,
-                    'username': data.username,
-                    'room': data.room,
-                }));
-            }
-        })
+        if (data.publicKeyRSA) {
+            let sendKeyAES = JSON.parse(localStorage.getItem(`keyAES_${data.room}`))
+            let encryptionKeyAES = encrypt(sendKeyAES, data.publicKeyRSA);
+            chatSocket.send(JSON.stringify({
+                'encryptionKeyAES': encryptionKeyAES,
+                'username': data.username,
+                //'usernameSuper': data.usernameSuper,
+                'room': data.room,
+            }));
+        }
 
         //запись симметричного ключа AES в localStorage
-        $(document).ready(async function () {
-            if (data.encryptionKeyAES) {
-                let importedPrivate = JSON.parse(window.localStorage.getItem(`privateKeyRSA_${roomName}`))
-                let resultKeyAES = await decryptRSA(importedPrivate, data.encryptionKeyAES);
-                localStorage.setItem(`keyAES_${data.room}`, JSON.stringify(resultKeyAES));
-            //удалить закрытый рша здесь
-            }
-        })
+        if (data.encryptionKeyAES) {
+            let resultKeyAES = decrypt(data.encryptionKeyAES, data.room)
+            localStorage.setItem(`keyAES_${data.room}`, JSON.stringify(resultKeyAES));
+        }
 
         window.scrollTo(0, document.body.scrollHeight);
 
@@ -757,57 +573,18 @@
     document.querySelector('#button-submit').onclick = function () {
         const messageInputDom = document.querySelector('#textarea');
         const message = messageInputDom.value;
-        let isImportant
-        if (isImportantBlock.count == -1) {
-            isImportant = true
-            isImportantBlock.count = 1
-            isImportantBlock.style.backgroundColor = '#fff'
-        } else isImportant = false
-        //const msgEncrypt = encryptMessage(message, roomName);
+        const msgEncrypt = encryptMessage(message, roomName);
 
         chatSocket.send(JSON.stringify({
-            //'message': msgEncrypt.encrypted,
-            'message': message,
+            'message': msgEncrypt.encrypted,
             'username': userName,
             'room': roomName,
-            //'iv': msgEncrypt.iv,
-            'isImportant': isImportant,
+            'iv': msgEncrypt.iv
         }));
 
         messageInputDom.value = '';
 
     };
-
-    //Сортировка важных сообщений
-    let buttonSort = document.querySelector('.sort')
-    buttonSort.count = 1;
-    buttonSort.onclick = function () {
-        let notImportant = document.querySelectorAll('.not-important')
-        if (buttonSort.count == 1) {
-            for (let i = 0; i < notImportant.length; i++) {
-                notImportant[i].style.display = 'none'
-            }
-            buttonSort.style.backgroundColor = '#8c1d00';
-        } else {
-            for (let i = 0; i < notImportant.length; i++) {
-                notImportant[i].style.display = 'flex'
-            }
-            buttonSort.style.backgroundColor = '#69218f';
-        }
-        buttonSort.count *= -1
-    }
-
-    //Посмотреть пользователей комнаты
-    let buttonUserRoom = document.querySelector('.button-user-room')
-    buttonUserRoom.count = 1
-    buttonUserRoom.onclick = function () {
-        if (buttonSort.count == 1) {
-            document.querySelector('.list-user-room').style.display = 'flex'
-        } else {
-            document.querySelector('.list-user-room').style.display = 'none'
-        }
-        buttonSort.count *= -1
-    }
 
     // список людей для создания чата
     let addUserList = document.querySelector("#button-plus")
@@ -934,7 +711,6 @@
             if (userAdd) {
                 for (let i = 0; i < userAdd.length; i++) {
                     if (userAdd[i].count == -1) {
-                        usernameNewRoom[0] = userName;
                         usernameNewRoom.push(userAdd[i].querySelector("#username-add").innerText);
                     }
                 }
@@ -950,16 +726,17 @@
                                 'userNewRoom': usernameNewRoom.join('|'),
                                 'newRoom': newRoomName.value,
                             },
-                            success: $(document).ready(async function (data) {
+                            success: function (data) {
+                                //alert('Done')
+                                //makeKeyFiles(document.querySelector('#username-input').value, document.querySelector('#room-name-input').value)
                                 //генерация ключа aes
-                                let key = await genarationKeyAES();
-                                // экспортируем ключ АЕС в формат, который можно сохранить в локалсторадже
-                                let exportedAES = await exportAES(key);
-                                // сохраяем ключ в локалсторадже
-                                localStorage.setItem(`keyAES_${newRoomName.value}`, JSON.stringify(exportedAES));
+                                localStorage.setItem(`keyAES_${newRoomName.value}`, JSON.stringify(genarationKeyAES()));
+
+
                                 usernameNewRoom = []
                                 $(location).attr('href', url);
-                            }),
+
+                            },
                         })
                     } else {
                         newRoomName.style.background = 'red'
@@ -1033,7 +810,7 @@
                         url: "{% url 'messanger:ajax_add_user_to_room'%}",
                         data: {
                             'newUser': newUsernameHeader.join('|'),
-                            'room': '{{ room_name }}',
+                            'room': {{ room_name }},
                         },
                         success: function (data) {
                             //alert('Done')
@@ -1041,18 +818,18 @@
                             //$(location).attr('href', url);
                             //window.location.replace(roomName);
                             //"участник ${newUsernameHeader} добавлен к чату"
-                            for (let i = 0; i < newUsernameHeader.length; i++) {
-                                chatSocket.send(JSON.stringify({
-                                    'username': 'system',
-                                    'room': roomName,
-                                    'message': `участник ${newUsernameHeader[i]} добавлен к чату`,
-                                    'isImportant': false
-                                }))
-                            }
                             newUsernameHeader = []
+                            for (let i = 0; i < newUsernameHeader.length; i++) {
+                                let newUser = document.createElement("p");
+                                newUser.className = "new-user";
+                                newUser.innerText = `участник ${newUsernameHeader[i]} добавлен к чату`
+                                document.querySelector("#chat").appendChild(newUser);
+                            }
                         },
                     })
-                } else alert("Участник не выбран");
+                } else {
+                    alert("Участник не выбран");
+                }
             } else {
                 alert("Участник не выбран");
                 return 0
@@ -1075,12 +852,7 @@
         fromBlock.innerText = data.username;
         let textBlock = document.createElement("div");
         textBlock.className = "text";
-        textBlock.innerText = data.message;
-        //textBlock.innerText = data.msgDecrypt;
-        if (data.isImportant) {
-            messageBlock.className = "message important";
-            triangleBlock.className = "triangle important-tr";
-        } else mesBlock.className = 'message-block not-important'
+        textBlock.innerText = data.msgDecrypt;
 
         document.querySelector("#chat").appendChild(mesBlock);
         mesBlock.appendChild(triangleBlock);
@@ -1088,7 +860,6 @@
         messageBlock.appendChild(msgBlock);
         msgBlock.appendChild(fromBlock);
         msgBlock.appendChild(textBlock);
-
     };
 
     function onReMessage(data) {
@@ -1103,24 +874,15 @@
         fromReBlock.innerText = "I'm";
         let textReBlock = document.createElement("div");
         textReBlock.className = "text";
-        //textReBlock.innerText = data.msgDecrypt;
-        textReBlock.innerText = data.message;
-        /*let dateBlock = document.createElement("div");
-        dateBlock.className = 'date';
-        dateBlock.innerText = data.date_added;*/
+        textReBlock.innerText = data.msgDecrypt + data.iv;
         let retriangleReBlock = document.createElement("div");
         retriangleReBlock.className = "retriangle";
-        if (data.isImportant) {
-            remessangesReBlock.className = "remessage important"
-            retriangleReBlock.className = "retriangle important-re-tr"
-        } else remesblock.className = 'remessage-block not-important'
 
         document.querySelector("#chat").appendChild(remesblock);
         remesblock.appendChild(remessangesReBlock);
         remessangesReBlock.appendChild(msgReBlock);
         msgReBlock.appendChild(fromReBlock);
         msgReBlock.appendChild(textReBlock);
-
         remesblock.appendChild(retriangleReBlock);
     };
 </script>

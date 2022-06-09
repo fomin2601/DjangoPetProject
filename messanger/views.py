@@ -16,12 +16,11 @@ def room(request, room_name):
         username = request.user.username
         messages = Message.objects.filter(room=room_name)
         user = request.user.username
-        user_rooms = Room.objects.values_list('room', 'allowed_users')
+        user_rooms = Room.objects.values_list('id', 'allowed_users')
         user_rooms = {str(room_number): allowed_users.split('|') for room_number, allowed_users in user_rooms}
         user_rooms = [key for key, vals in user_rooms.items() if str(user) in vals]
         all_users = User.objects.values('username')
-        super_user = Room.objects.filter(room=room_name)[0]
-        #print(super_user[0])
+        super_user = Room.objects.filter(room=room_name)
         # all_users = [u_name for u_name in all_users]
         return render(request, 'chat/room.html',
                       {'room_name': room_name, 'username': username, 'messages': messages, 'user_rooms': user_rooms,
@@ -37,7 +36,7 @@ def ajax_login(request):
     if request.method == 'POST':
         username = request.POST.get('username', 'anon')
         password = request.POST.get('password', '')
-        #room_name = request.POST.get('roomname', '')
+        room_name = request.POST.get('roomname', '')
         user = auth.authenticate(username=username, password=password)
         if user is not None:
             auth.login(request, user)
