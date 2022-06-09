@@ -21,11 +21,12 @@ def room(request, room_name):
         user_rooms = [key for key, vals in user_rooms.items() if str(user) in vals]
         all_users = User.objects.values('username')
         super_user = Room.objects.filter(room=room_name)[0]
-        #print(super_user[0])
-        # all_users = [u_name for u_name in all_users]
-        return render(request, 'chat/room.html',
-                      {'room_name': room_name, 'username': username, 'messages': messages, 'user_rooms': user_rooms,
-                       'all_users': all_users, 'superuser': super_user})
+        if (request.user in all_users) or (room_name == 'publicChat') or request.user.is_staff:
+            return render(request, 'chat/room.html',
+                          {'room_name': room_name, 'username': username, 'messages': messages, 'user_rooms': user_rooms,
+                           'all_users': all_users, 'superuser': super_user})
+        else:
+            return HttpResponse('You have no access')
     else:
         return redirect('messanger:index')
 

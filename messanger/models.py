@@ -6,6 +6,7 @@ class Message(models.Model):
     username = models.CharField(max_length=255)
     room = models.CharField(max_length=255)
     content = models.TextField()
+    iv = models.CharField(max_length=255, default='no_key')
     is_important = models.BooleanField(default=False)
     date_added = models.DateTimeField(auto_now_add=True)
 

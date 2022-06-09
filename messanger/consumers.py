@@ -32,10 +32,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = data['message']
         username = data['username']
         room = data['room']
-        # iv = data['iv']
+        iv = data['iv']
         is_important = data['isImportant']
 
-        await self.save_message(username, room, message, is_important)
+        await self.save_message(username, room, message, iv, is_important)
 
         # Send message to room group
         await self.channel_layer.group_send(
@@ -44,6 +44,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'type': 'chat_message',
                 'message': message,
                 'username': username,
+                'iv': iv,
                 'is_important': is_important,
             }
         )
@@ -52,14 +53,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event['message']
         username = event['username']
-        # iv = event['iv']
+        iv = event['iv']
         is_important = event['is_important']
 
         # Отправка сообщения в канал веб-сокета
         await self.send(text_data=json.dumps({
             'message': message,
             'username': username,
-            # 'iv': iv,
+            'iv': iv,
             'isImportant': is_important
         }))
 

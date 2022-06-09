@@ -51,8 +51,6 @@ $(document).ready(async function () {
                 encryptionKeyAES = encryptionKeyAES.buffer;
                 let importedPrivate = await importPrivateRSA(JSON.parse(window.localStorage.getItem(`privateKeyRSA_${data.room}`)))
                 let resultKeyAES = await decryptRSA(importedPrivate, encryptionKeyAES);
-                //resultKeyAES = await importAES(JSON.parse(resultKeyAES));
-                console.log(resultKeyAES);
                 localStorage.setItem(`keyAES_${roomNameKeys}`, resultKeyAES);
             }
         }

@@ -195,8 +195,8 @@ window.encryptMessage = async function(message, roomname) {
     if (!(localStorage.getItem(`keyAES_${roomname}`))) {
         alert('not key aes');
     } else {
-        let key = JSON.parse(localStorage.getItem(`keyAES_${roomname}`))
-        let iv = window.crypto.getRandomValues(new Uint8Array(12))
+        let key = await importAES(JSON.parse(localStorage.getItem(`keyAES_${roomname}`)))
+        let iv = window.crypto.getRandomValues(new Uint8Array(20))
         let encoded = getMessageEncoding(message);
         let encrypted = await window.crypto.subtle.encrypt(
             {
@@ -221,7 +221,7 @@ window.decryptMessage = async function(ciphertext, iv, roomname) {
         alert ('not de-key aes');
         //let key = window.crypto.getRandomValues(new Uint8Array(12))
     }
-        let key = JSON.parse(localStorage.getItem(`keyAES_${roomname}`));
+        let key = await importAES(JSON.parse(localStorage.getItem(`keyAES_${roomname}`)));
         let decrypted = await window.crypto.subtle.decrypt(
             {
                 name: "AES-GCM",
